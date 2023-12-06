@@ -229,7 +229,7 @@ void coward() {
 }
 
 int main() {
-	while (class_choice < 1 && class_choice > 2) {
+	while (class_choice != 1 && class_choice != 2) {
 		cout << "\nYou're slightly coming to. You can't remember your name, but you at least remember your occupation. You are a...\n1. Knight\n2. Mage (Coming Soon)\nType the number of your choice and press ENTER to continue.\n";
 		cin >> class_choice;
 		//cout << class_choice;
