@@ -233,13 +233,13 @@ void battle() {
 				if (spell1 == true) {
 					cout << "\n1. Light";
 				}
-				else if (spell2 == true) {
+				if (spell2 == true) {
 					cout << "\n2.Magic Missile";
 				}
-				else if (spell3 == true) {
+				if (spell3 == true) {
 					cout << "\n3.Freeze";
 				}
-				else if (spell4 == true) {
+				if (spell4 == true) {
 					cout << "\n4.Fireball";
 				}
 
