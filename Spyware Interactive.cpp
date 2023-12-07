@@ -228,6 +228,30 @@ void coward() {
 
 }
 
+
+void forest() {
+	string spring_choice;
+	bool spring_choice_valid = false;
+	cout << "Making it into the depths of the expansive forest, you hear outward the outward groans and grunts of the dearly departed. Spores permeate the thick fog within." << endl;
+	cout << "Luckily, you find a hot springs, completely isolated from the rest of the forest." << endl; 
+
+	while (spring_choice_valid == false) {
+		cout << "Will you take a break in the hot springs? Enter YES or NO, then hit ENTER." << endl;
+		cin >> spring_choice;
+		if (spring_choice == "YES" || spring_choice == "yes") {
+			player_hp = 150;
+			player_sanity = 100;
+			cout << "You feel a whole lot better. Onward..." << endl;
+			spring_choice_valid = true;
+		}
+		else if (spring_choice == "NO" || spring_choice == "no") {
+			cout << "You decide to not take a bath. Onward..." << endl;
+			spring_choice_valid = true;
+		}
+	}
+
+}
+
 int main() {
 	while (class_choice != 1 && class_choice != 2) {
 		cout << "\nYou're slightly coming to. You can't remember your name, but you at least remember your occupation. You are a...\n1. Knight\n2. Mage (Coming Soon)\nType the number of your choice and press ENTER to continue.\n";
@@ -252,7 +276,7 @@ int main() {
 	cout << "\nEver since your partner went missing after last week's expedition, you've turned to drinking and vice to keep your mind off of it.";
 	cout << "\nHowever, this massive hangover dawning upon you signals that you can't just keep putting it off forever.\n";
 	cout << "\nPress ENTER to continue.\n";
-	//removed the cin.ignore() at this line because it made you have to press ENTER twice instead of once
+	cin.ignore();
 	cin.get(proceed);
 	cout << "On cue, the front door is assaulted by three knocks that echo throughout the whole room. You almost go for it, but the knocking continues.";
 	cout << "\nDemonic screeches and garbled cries for help muffled by frantic growls and horrid scraping.";
@@ -267,25 +291,19 @@ int main() {
 
 	if (tavern_choice == 1) {
 		door_kicked();
-		cout << "\nThanks for playing the demo! Please fill out the form, or play again to see the other paths!";
-		cin.ignore();
-		cin.get(proceed);
+		//forest();
 		exit(0);
 	}
 
 	else if (tavern_choice == 2) {
 		backdoor();
-		cout << "\nThanks for playing the demo! Please fill out the form, or play again to see the other paths!";
-		cin.ignore();
-		cin.get(proceed);
+		//forest();
 		exit(0);
 	}
 
 	else if (tavern_choice == 3) {
 		coward();
-		cout << "\nThanks for playing the demo! Please fill out the form, or play again to see the other paths!";
-		cin.ignore();
-		cin.get(proceed);
+		//forest();
 		exit(0);
 	}
 
