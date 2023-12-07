@@ -3,6 +3,7 @@
 #include <list>
 #include <vector>
 #include <random>
+#include <Windows.h>
 
 using namespace std;
 
@@ -10,6 +11,7 @@ int class_choice = 0; // 1 is knight, 2 is mage
 int player_atk = 20;
 int special_point_max = 100;
 int special_point;
+int turn_special_point = 100; //This is so special points don't get used up when the player chooses to double down or use a spell then fails the next input - Nate
 int player_sanity = 100;
 int player_def; // 0 is unarmored; 1 is starting armor; 2 is better armor -Ruby
 int attack; //whether the player is attack with spells or weapons; 1 is Weapons; 2 is Spells -Ruby
@@ -18,33 +20,36 @@ int weapon_choice = 0;
 int spell_choice = 0;
 int crit_chance = 0;
 int double_down_choice;
-long long player_hp = 100; //long long makes it so the amount removed can be large, the warning that is prompting this change is from Metal Pipe's Damage -Ruby
+long long int player_hp = 100; //long long makes it so the amount removed can be large, the warning that is prompting this change is from Metal Pipe's Damage -Ruby
 char proceed = ' '; //have the = ' ' removes an error where it is saying get(proceed) is not an acceptable input -Ruby
 bool player_status_condition = false;
 bool double_down = false;
 bool special_point_upgrade = false;
-//Weapons
-bool weapon0 = true; //fist -Ruby
-bool weapon1 = false; //arming sword (knight) or bo staff (mage) -Ruby
-bool weapon2 = false; //halberd (knight) or quarterstaff (mage) -Ruby
-bool weapon3 = false; //giant hammer (knight) or holy blade (mage) -Ruby
-//Spells
-bool spell1 = false; //light spell -Ruby
-bool spell2 = false; //magic missile -Ruby
-bool spell3 = false; //freeze -Ruby
-bool spell4 = false; //fireball spell -Ruby
+bool battle_lost = false;
 
-//^may switch the vector to list, having issues adding values to it
+//Weapons
+//The battle system needed a lot of changes to work with multiple weapons, but adding a variable for your fist is pointless, we don't have a break-your-hand mechanic. - Nate
+//Numbers are changed to be consistent with what the player enters during battle. - Nate
+bool weapon2 = false; //arming sword (knight) or bo staff (mage) -Ruby
+bool weapon3 = false; //halberd (knight) or quarterstaff (mage) -Ruby
+bool weapon4 = false; //giant hammer (knight) or holy blade (mage) -Ruby
+
+//Spells
+bool light = false; //light spell -Ruby
+bool magic_missile = false; //magic missile -Ruby
+bool freeze = false; //freeze -Ruby
+bool fireball = false; //fireball spell -Ruby
 
 int tavern_choice = 0;
-int bridge_choice;
+int bridge_choice = 0;
+int spring_choice = 0;
 
 int enemy1_hp = 0;
 int enemy2_hp = 0;
 int enemy3_hp = 0;
 
-//0 is dead, 1 is parasite, 2 is infected, 3 is metal pipe
-//Parasite has 25hp, infected has 75hp, juggernaut has 150hp, metal pipe has 1738hp
+//0 is dead, 1 is parasite, 2 is infected, 3 is bear/juggernaut, 4 is gravemind, 1738 is metal pipe
+//Parasite has 25hp, infected has 75hp, juggernaut has 165hp, metal pipe has 1738hp
 int enemy1 = 0;
 int enemy2 = 0;
 int enemy3 = 0;
@@ -54,7 +59,29 @@ bool enemy2_status_condition = false;
 bool enemy3_status_condition = false;
 bool froze_metal_pipe = false;
 
-int loop = 0; //exists to stop infinite loops when something breaks
+int loop = 0; //exists to stop infinite loops when something breaks, we shouldn't need it anymore. - Nate
+
+
+//Functions for the ACSII art, I should have implemented this a while ago but we didn't have time - Nate
+void game_over_ascii() {
+	cout << "\n _____    ___   ___  ___  _____    _____   _   _   _____  ______\n|  __ \\  / _ \\  |  \\/  | |  ___|  |  _  | | | | | |  ___| | ___ \\\n| |  \\/ / /_\\ \\ | .  . | | |__    | | | | | | | | | |__   | |_/ /\n| | __  |  _  | | |\\/| | |  __|   | | | | | | | | |  __|  |    /\n| |_\\ \\ | | | | | |  | | | |___   \\ \\_/ / \\ \\_/ / | |___  | |\\ \\\n \\____/ \\_| |_/ \\_|  |_/ \\____/    \\___/   \\___/  \\____/  \\_| \\_|\n";
+}
+
+void victory_ascii() {
+	cout << "\n:::     :::      :::::::::::       ::::::::       :::::::::::       ::::::::       :::::::::       :::   :::      :::\n:+:     :+:          :+:          :+:    :+:          :+:          :+:    :+:      :+:    :+:      :+:   :+:      :+:\n+:+     +:+          +:+          +:+                 +:+          +:+    +:+      +:+    +:+       +:+ +:+       +:+\n+#+     +:+          +#+          +#+                 +#+          +#+    +:+      +#++:++#:         +#++:        +#+\n +#+   +#+           +#+          +#+                 +#+          +#+    +#+      +#+    +#+         +#+         +#+\n  #+#+#+#            #+#          #+#    #+#          #+#          #+#    #+#      #+#    #+#         #+#             \n    ###          ###########       ########           ###           ########       ###    ###         ###         ###\n";
+}
+
+void team_logo_ascii() {
+	cout << "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n+++++++++++++++++++++++++++++++.                                    .+++++++++++++++++++++++++++++++\n++++++++++++++++++++++++++++:::.                                    .:::++++++++++++++++++++++++++++\n++++++++++++++++++++++++++++                                            ++++++++++++++++++++++++++++\n+++++++++++++++++++++++++                                                  +++++++++++++++++++++++++\n+++++++++++++++++++++++++                                                  +++++++++++++++++++++++++\n++++++++++++++++++++++                                                        ++++++++++++++++++++++\n++++++++++++++++++++++                  ....................                  ++++++++++++++++++++++\n++++++++++++++++++++++                  :++++++++++++++++++:                  ++++++++++++++++++++++\n++++++++++++++++++++++               -++++++++++++++++++++++++-               ++++++++++++++++++++++\n++++++++++++++++++++++               -++++++++++++++++++++++++-               ++++++++++++++++++++++\n++++++++++++++++++++++            =++++++++++++++++++++++++++++++=            ++++++++++++++++++++++\n++++++++++++++++++++++            =++++++++++++++++++++++++++++++=            ++++++++++++++++++++++\n++++++++++++++++++++++            =++++++++++++++++++++++++++++++=            ++++++++++++++++++++++\n++++++++++++++++++++++            =++++++++++++++++++++++++++++++=            ++++++++++++++++++++++\n++++++++++++++++++++++            =++++++++++++++++++++++++++++++=            ++++++++++++++++++++++\n++++++++++++++++++++++            =++++++++++++++++++++++++++++++=            ++++++++++++*#########\n++++++++++++++++++++++            =++++++++++++++++++++++++++++++=            ++++++++++++*#########\n++++++++++++++++++++++            =++++++++++++++++++++++++++++++=            ######################\n++++++++++++++++++++++            =++++++++++++++++++************+            ######################\n++++++++++++++++++++++            =++++++++++++++++++############*            ######################\n++++++++++++++++++++++            *##############################*            ######################\n++++++++++++++++++++++            *##############################*            ######################\n++++++++++++#######                                                              ###################\n++++++++++++#######                                                              ###################\n###############*                                                                    *###############\n############*==-                                                                    -==*############\n############=                                                                          =############\n############=                                                                          =############\n############=                                                                          =############\n############=                                  ######                                  =############\n############=                                  ######                                  =############\n############=                              .############.                              =############\n############=                              .############.                              =############\n############=                              .############.                              =############\n############=                                  ######                                  =############\n############=                                  ######                                  =############\n############=                                  ######                                  =############\n############=                              .---######---.                              =############\n############=                              .############.                              =############\n############=                              .############.                              =############\n############=                              .############.                              =############\n############=                           :##################-                           =############\n############=                           :##################-                           =############\n############=                                                                          =############\n############=                                                                          =############\n############=                                                                          =############\n############=                                                                          =############\n############=                                                                          =############\n###############*                                                                    *###############\n################---                                                              ---################\n###################                                                              ###################\n####################################################################################################\n####################################################################################################\n";
+}
+
+void parasite_ascii() {
+	cout << "                                        =================\n                                  =============================\n                                  =======               =======\n                               ====                           ====\n                               ====                           ====\n                            ====                                 ====\n                            ====                                 ====\n                            ====                                 ====\n                         ======                                  =======\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                            ====     -------         -------     ====\n                            ====     -------         -------     ====\n                            ====     -------         -------     ====\n                               ====                           ====\n                               ====                           ====\n                               ==========               =============\n                               ==========               =============\n                            ====     ==========================  =======\n                            ====  ============================================\n                            ====  ====  ====   ===   ====  =======      ======\n                         ===   ====     ====   ===   ====     =======      ===\n                         ===   ====     ====   ===   ====     =======      ===\n                      ======   ====     ====   ======   ====     ====      ===\n                   ================     ====   ======   ====     =======   ===\n                   ======   ====        ====      ===   ====         ===   ===\n                   ===      ====        ====      ===   ====         ===      ====\n                   ===      ====        ====      ===   ====         ===      ====\n               =======      ====        ====      ===   ====         ======   ====\n               =======      ====        ====      ===   ====         ======   ====\n               ====         ====        =======   ===   =======         ===\n                ======      =======      ======   =============         ===\n                   ===         ====         ===      ====  ====\n";
+}
+
+void infected_ascii() {
+	cout << "\n                            ===============\n                         ======@@@@=========\n                         ===   @@@@     ====\n                         ===         @@@@======\n                         ===         @@@@======\n                         ===   @@@@         ===\n                         ===   @@@@         ===\n                            ==========      =============\n                            =======================================\n                                     ==========#########=============\n                            ================###         ###=============\n                            ================###         ###=============\n                         ===================###---   ---###================\n                      ======================###---   ---###==================\n                      ======================###         ###====  =============\n                   =============     ==========#########====        ==========\n                   =============     =======================         =========\n               ==========            =======================         =============\n               ==========            =======================         =============\n               =======               =======================         =============\n            ==========###            =======================         =============\n            ==========###            =======================            ===   ===\n            ==========################################======            ===   ===\n            ==========#################################=====            ===   ===\n          @@@===@@@===##################################=====           ===   ===\n          @@@===@@@===###################################======         ===   ===\n                      ###         ==========         ==========         ===   ===\n                      ###         ==========         ==========         ===   ===\n                                  ==========            =======\n                                  =======               =======\n                                  =======               =======\n                                  =======               ==========\n                                  =======               ==========\n                                  =======                  =======\n                               ==========                  =======\n                               ==========                  =======\n                               ==========                  =======\n                               ==========                  =======\n                            =============                  ==========\n                         ================                  =============\n                         ================                  =============\n";
+}
 
 int random_crit(int low, int high) {
 	random_device rd;
@@ -82,10 +109,14 @@ void enemy_turn(int current_enemy) {
 	else if (current_enemy == 3) {
 		cout << "\nEnemy Juggernaut attacks!\n";
 		player_hp -= 15;
-		player_sanity -= 25;
+		player_sanity -= 10; //The old value was 25, a bit extreme for a boss fight that's supposed to take many turns. - Nate
 	}
 	else if (current_enemy == 1738) {
-		if (spell_choice == 1) { //Light Spell -Ruby
+		//These special interactions are a cool idea, but since they're in a place that wouldn't work,
+		//and they only exist for a fight most people won't see, that they'll lose anyway, they're commented out for now.
+		//I have more important things to fix - Nate
+
+		/*if (spell_choice == 1) { //Light Spell -Ruby
 			enemy1_status_condition = false;
 			player_status_condition = true;
 			player_status();
@@ -101,7 +132,7 @@ void enemy_turn(int current_enemy) {
 		}
 		else {
 			player_atk = 0;
-		}
+		} */
 		cout << "\nThe metal pipe breaks your kneecaps!\n";
 		player_hp -= 194530298001;
 		player_sanity -= 420;
@@ -110,209 +141,236 @@ void enemy_turn(int current_enemy) {
 
 void battle() {
 	while (true) {
+		turn_special_point = special_point; //Restores SP if something goes wrong between using double down or a spell
 		if (player_hp <= 0 && enemy1 == 3) {
 			cout << "\n'but the Lord laughs at the wicked, for he knows their day is coming.'\n";
 			cin.ignore();
 			cin.get(proceed); //continues by just pressing 'enter' -Ruby
+			battle_lost = true;
 			exit(0);
 		}
 		else if (player_hp <= 0) {
-			cout << "Game Over";
+			game_over_ascii();
+			cout << "\nThank you for playing the second demo! Feel free to play it again and make different choices.\nPlease be sure to fill out the QA form and let us know of any issues!\n";
+			cin.get(proceed); //I remembered that the exe would exit as soon as it ended, so we needed these. - Nate
 			cin.ignore();
-			cin.get(proceed);
+			battle_lost = true;
 			exit(0);
 		}
 		if (enemy1 == 0 && enemy2 == 0 && enemy3 == 0) {
 			player_hp = 100;
 
-			if (special_point_upgrade != true && special_point != special_point_max) {
-				special_point += 10;
+			//If and first else if will raise SP when you have less than max but not more than the max -25, else will raise SP to the max when it is at max -24 or more.
+			//The else will never run with how we currently use SP, but we might change values and I'd rather not have to add it again later -Nate 
+			if (special_point_upgrade == false && special_point <= 75) {
+				special_point += 25;
 			}
-
-			if (special_point > special_point_max) {
+			else if (special_point_upgrade == true && special_point <= 175) {
+				special_point += 25;
+			}
+			else {
 				special_point = special_point_max;
 			}
 
-			cout << "\nVictory!\n";
-			cout << " hit ENTER to continue:\n";
+			victory_ascii();
+			cout << "\nHit ENTER to continue:\n";
 			cin.ignore();
 			cin.get(proceed);
 			break;
 		}
 
-		cout << "\nCurrent HP: " << player_hp << endl; //Having an error when we reach this line, error is an issue with the vector sub-script -Ruby //no idea what that means
+		cout << "\nCurrent HP: " << player_hp << endl;
+		cout << "Current SP: " << special_point << endl;
 		if (class_choice == 2) {
-			cout << "\nDo you want to use... \n1-weapons or \n2-Spells\nType the number of your choice and press ENTER to continue.\n";
+			cout << "\nOpen weapon selection or spell selection?\nType the number and press ENTER\n1. Weapons\n2. Spells\n";
 			cin >> attack;
 		}
-
 		else {
 			attack = 1;
 		}
 
-		bool for_valid_weapon_option = true; //This is for the while loop below; false will disable the loop and allow the player to progess -Ruby
+		//bool for_valid_weapon_option = true; //This is for the while loop below; false will disable the loop and allow the player to progess -Ruby
+		//The whole for_valid_weapon_option thing was pointless, I appreciate the effort but there are far less bugs when you just restart the turn - Nate
 
-		while (for_valid_weapon_option == true) {
-			if (attack == 1) { //Weapons -Ruby
-				cout << "\nType in the number of your weapon:\n0.First";
-				if (weapon1 == true) {
-					cout << "\n1.";
-					if (class_choice == 1) { 
-						cout << "Arming Sword";
-					}
-					else if (class_choice == 2) {
-						cout << "Bo Staff";
-					}
-				}
-				cout << "\nType the number of your choice and press ENTER to continue.\n";
-
-				if (weapon2 = true) {
-					cout << "\n2.";
-					if (class_choice == 1) {
-						cout << "Halberd";
-					}
-					else if (class_choice == 2) {
-						cout << "Quarterstaff";
-					}
-				}
-
-				if (weapon3 == true) {
-					cout << "\n3.";
-					if (class_choice == 1) {
-						cout << "Giant Hammer";
-					}
-					else if (class_choice == 2) {
-						cout << "Energy Blade";
-					}
-				}
-
-				cin >> weapon_choice;
-				if (weapon_choice == 1) {
-					crit_chance = random_crit(1, 4);
-					if (crit_chance == 1) {
-						cout << "\nYou feel a little lucky...\n";
-						player_atk = 12;
-					}
-					else {
-						player_atk = 6;
-					}
-					for_valid_weapon_option = false;
-				}
-				else if (weapon_choice == 2) {
-					crit_chance = random_crit(1, 4);
-					if (crit_chance == 1) {
-						player_atk = 30;
-						cout << "\nYou feel a little lucky...\n";
-					}
-					else {
-						player_atk = 15;
-					}
-					for_valid_weapon_option = false;
-				}
-				else { //resets the battle
-					cout << "why?";
-					for_valid_weapon_option = true;
-					continue;
-				}
-				
+		if (attack == 1) { //Weapons -Ruby
+			cout << "\nEnter a number to choose a weapon.\n1.Fist";
+			if (weapon2 == true) {
+				cout << "\n2.";
 				if (class_choice == 1) {
-					cout << "\nWould you like to Double Down? Ty\n1. Yes \n2. No \nType the number of your choice and press ENTER to continue.\n";
-					cin >> double_down_choice;
-
-					if (double_down_choice == 1) {
-						player_atk = player_atk * 2;
-					}
-					else {
-						player_atk = player_atk;
-					}
+					cout << "Arming Sword";
+				}
+				else if (class_choice == 2) {
+					cout << "Bo Staff";
 				}
 			}
-			else if (attack == 2) { //Spells -Ruby
-				cout << "\nTest";
-				cout << "\nWhich spell would you like to use...";
-				if (spell1 == true) {
-					cout << "\n1. Light";
+
+			if (weapon3 == true) {
+				cout << "\n3.";
+				if (class_choice == 1) {
+					cout << "Halberd";
 				}
-				if (spell2 == true) {
-					cout << "\n2.Magic Missile";
+				else if (class_choice == 2) {
+					cout << "Quarterstaff";
 				}
-				if (spell3 == true) {
-					cout << "\n3.Freeze";
+			}
+
+			if (weapon4 == true) {
+				cout << "\n4.";
+				if (class_choice == 1) {
+					cout << "Giant Hammer";
 				}
-				if (spell4 == true) {
-					cout << "\n4.Fireball";
+				else if (class_choice == 2) {
+					cout << "Energy Blade";
+				}
+			}
+			std::cout << "\n";
+			cin >> weapon_choice;
+			if (weapon_choice == 1) {
+				crit_chance = random_crit(1, 4);
+				if (crit_chance == 1) {
+					cout << "\nYou feel a little lucky...\n";
+					player_atk = 12;
+				}
+				else {
+					player_atk = 6;
+				}
+			}
+			else if (weapon_choice == 2) {
+				crit_chance = random_crit(1, 4);
+				if (crit_chance == 1) {
+					player_atk = 30;
+					cout << "\nYou feel a little lucky...\n";
+				}
+				else {
+					player_atk = 15;
 				}
 
-				cin >> spell_choice;
-
-				if (spell_choice == 1) { //Light Spell -Ruby
-					int blind_chance = random_crit(1, 4);
-					if (blind_chance == 1) {
-						if (attack_choice == 1) {
-							enemy1_status_condition = true;
-						}
-						else if (enemy2_status_condition == 2) {
-							enemy2_status_condition = true;
-						}
-					}
+			}
+			else if (weapon_choice == 3) {
+				crit_chance = random_crit(1, 4);
+				if (crit_chance == 1) {
+					player_atk = 50;
+					cout << "\nYou feel a little lucky...\n";
 				}
-				else if (spell_choice == 2) { //Magic Missile -Ruby
+				else {
 					player_atk = 25;
 				}
-				else if (spell_choice == 3) {
-					random_crit(1, 4);
+			}
+			else { //resets the turn
+				continue;
+			}
 
+			if (class_choice == 1 && special_point >= 25) {
+				cout << "\nUse 25 SP to Double Down?\n1. Yes \n2. No\n";
+				cin >> double_down_choice;
+
+				if (double_down_choice == 1) {
+					player_atk = player_atk * 2;
+					special_point -= 25;
 				}
+				else {
+					player_atk = player_atk;
+				}
+			}
+		}
+		else if (attack == 2) { //Spells -Ruby
+			cout << "\nWhich spell would you like to use...";
+			if (light == true) {
+				cout << "\n1. Light 25 SP";
+			}
+			if (magic_missile == true) {
+				cout << "\n2. Magic Missile 25 SP";
+			}
+			if (freeze == true) {
+				cout << "\n3. Freeze";
+			}
+			if (fireball == true) {
+				cout << "\n4. Fireball";
+			}
+			std::cout << "\n";
 
-				for_valid_weapon_option = false;
+			cin >> spell_choice;
+
+			if (spell_choice == 1 && light == true && special_point >= 25) { //Light Spell -Ruby 
+				int blind_chance = random_crit(1, 8);
+				if (blind_chance == 1) {
+					if (attack_choice == 1) {
+						enemy1_status_condition = true;
+					}
+					if (enemy2_status_condition == 2) {
+						enemy2_status_condition = true;
+					}
+					if (enemy3_status_condition == 2) {
+						enemy3_status_condition = true;
+					}
+				}
+			}
+			else if (spell_choice == 2 && special_point >= 25) { //Magic Missile -Ruby
+				special_point -= 25;
+				player_atk = 35;
+			}
+			else if (spell_choice == 3) { //This spell and the next one are too unfinished, they won't be in QA2 - Nate
+				random_crit(1, 4);
 
 			}
-			else { //Prompt if the player doesn't enter a valid number -Ruby
-				cout << "\nCould you please enter a valid number\n";
-				for_valid_weapon_option = true;
+			else {
+				special_point = turn_special_point;
+				continue;
 			}
-		}
 
-		cout << "\nEnter the number of the enemy you will attack\n";
-		if (enemy1 != 0) {
-			cout << "Enemy 1: " << enemy1_hp << "hp\n";
 		}
-		if (enemy2 != 0) {
-			cout << "Enemy 2: " << enemy2_hp << "hp\n";
-		}
-		if (enemy3 != 0) {
-			cout << "Enemy 3: " << enemy3_hp << "hp\n";
-		}
-		cin >> attack_choice;
-		if (attack_choice == 1 && enemy1 != 0) {
-			cout << "\nEnemy 1 takes " << player_atk << " damage!\n";
-			enemy1_hp -= player_atk;
-			if (enemy1_hp <= 0) {
-				enemy1 = 0;
-				cout << "\nEnemy 1 has been defeated!\n";
-			}
-		}
-		else if (attack_choice == 2 && enemy2 != 0) {
-			cout << "\nEnemy 2 takes " << player_atk << " damage!\n";
-			enemy2_hp -= player_atk;
-			if (enemy2_hp <= 0) {
-				enemy2 = 0;
-				cout << "\nEnemy 2 has been defeated!\n";
-			}
-		}
-		else if (attack_choice == 3 && enemy3 != 0) {
-			cout << "\nEnemy 3 takes " << player_atk << " damage!\n";
-			enemy3_hp -= player_atk;
-			if (enemy3_hp <= 0) {
-				enemy3 = 0;
-				cout << "\nEnemy 3 has been defeated!\n";
-			}
-		}
-		else { //resets the turn, can be exploited to force a crit but it's fine
-			cout << "bruh";
+		else {
+			special_point = turn_special_point;
 			continue;
 		}
 
+		cout << "\nAttack which enemy?\n";
+		if (enemy1 != 0) { //These ifs display enemies currently on the field and their HP - Nate
+			cout << "Enemy 1: " << enemy1_hp << "HP\n";
+		}
+		if (enemy2 != 0) {
+			cout << "Enemy 2: " << enemy2_hp << "HP\n";
+		}
+		if (enemy3 != 0) {
+			cout << "Enemy 3: " << enemy3_hp << "HP\n";
+		}
+
+		cin >> attack_choice; //For choosing which enemy to attack - Nate
+
+		if (attack == 1 || spell_choice == 2) { //This code only runs when using a weapon or magic missile, the other spells can't fit this same structure of removing hp based on attack - Nate
+			if (attack_choice == 1 && enemy1 != 0) {
+				cout << "\nEnemy 1 takes " << player_atk << " damage!\n";
+				enemy1_hp -= player_atk;
+				if (enemy1_hp <= 0) {
+					enemy1 = 0;
+					cout << "\nEnemy 1 has been defeated!\n";
+				}
+			}
+			else if (attack_choice == 2 && enemy2 != 0) {
+				cout << "\nEnemy 2 takes " << player_atk << " damage!\n";
+				enemy2_hp -= player_atk;
+				if (enemy2_hp <= 0) {
+					enemy2 = 0;
+					cout << "\nEnemy 2 has been defeated!\n";
+				}
+			}
+			else if (attack_choice == 3 && enemy3 != 0) {
+				cout << "\nEnemy 3 takes " << player_atk << " damage!\n";
+				enemy3_hp -= player_atk;
+				if (enemy3_hp <= 0) {
+					enemy3 = 0;
+					cout << "\nEnemy 3 has been defeated!\n";
+				}
+			}
+			else { //resets the turn, can be exploited to force a crit but it's fine - Nate
+				special_point = turn_special_point;
+				continue;
+			}
+
+		}
+		else {
+			continue;
+		}
 		//enemy turns start here
 		enemy_turn(enemy1);
 		enemy_turn(enemy2);
@@ -324,13 +382,13 @@ void door_kicked() {
 	cout << "\nWorking up the impaired judgment caused by your three-day bender, you effortlessly kick down the door and face the demonic door-puncher.\n" << endl;
 	cout << "It was a horrific sight indeed. The man- no, the beast before you was a man, but its clammy flesh has been contorted in a manner where its head is dangling to the side,";
 	cout << "\na face of anguish and suffering frozen in the exact moment of its initial form being violated.";
-	cout << "\nWithin its bosom lies a squirming little parasite burrowed in, with its red tendrils sticking out and aimlessly feeling everything it can.";
-	cout << "\n press ENTER to continue.\n" << endl;
+	cout << "\nBurrowed in its chest, a giant squirming parasite, with its red tendrils sticking out and aimlessly feeling everything it can.";
+	cout << "\nPress ENTER to continue.\n" << endl;
 	cin.ignore();
 	cin.get(proceed);
+	infected_ascii();
 	cout << "Upon sighting you, it immediately charges at you, thirsting for another body to add to the fold." << endl;
-	cout << "\nGet ready to fight!  press ENTER to continue.\n" << endl;
-	cin.ignore();
+	cout << "\nGet ready to fight! Press ENTER to continue.\n" << endl;
 	cin.get(proceed);
 	enemy1 = 2;
 	enemy1_hp = 50;
@@ -339,7 +397,7 @@ void door_kicked() {
 	battle();
 	cout << "Your bones ache and your brain is burning, but at least you're still alive.";
 	cout << "\nGingerly stepping over the now motionless husks, you walk outside to find the entire town in ruin.";
-	cout << "\n Knowing fully well that you won't last in the middle of a town full of these zombie-like freaks, you run into the forest...";
+	cout << "\nKnowing fully well that you won't last in the middle of a town full of these zombie-like freaks, you run into the forest...";
 }
 
 void backdoor() {
@@ -348,7 +406,7 @@ void backdoor() {
 	cout << "Press ENTER to continue.";
 	cin.ignore();
 	cin.get(proceed);
-	cout << "                                        =================\n                                  =============================\n                                  =======               =======\n                               ====                           ====\n                               ====                           ====\n                            ====                                 ====\n                            ====                                 ====\n                            ====                                 ====\n                         ======                                  =======\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                         ===                                         ===\n                            ====     -------         -------     ====\n                            ====     -------         -------     ====\n                            ====     -------         -------     ====\n                               ====                           ====\n                               ====                           ====\n                               ==========               =============\n                               ==========               =============\n                            ====     ==========================  =======\n                            ====  ============================================\n                            ====  ====  ====   ===   ====  =======      ======\n                         ===   ====     ====   ===   ====     =======      ===\n                         ===   ====     ====   ===   ====     =======      ===\n                      ======   ====     ====   ======   ====     ====      ===\n                   ================     ====   ======   ====     =======   ===\n                   ======   ====        ====      ===   ====         ===   ===\n                   ===      ====        ====      ===   ====         ===      ====\n                   ===      ====        ====      ===   ====         ===      ====\n               =======      ====        ====      ===   ====         ======   ====\n               =======      ====        ====      ===   ====         ======   ====\n               ====         ====        =======   ===   =======         ===\n                ======      =======      ======   =============         ===\n                   ===         ====         ===      ====  ====\n";
+	parasite_ascii();
 	cout << "\nGet ready to fight! Press ENTER to continue.\n" << endl;
 	cin.get(proceed);
 	enemy1 = 1;
@@ -361,8 +419,8 @@ void backdoor() {
 }
 
 void coward() {
-	cout << "Unsure of the idea that you wish to leave your only idea of shelter, you hide behind the bar counter, praying that the incessant knocking stops." << endl;
-	cout << "The knocking ends. For a brief moment, you stop to consider if it was only a drunkard, and you're almost a little at ease at the idea.\n";
+	cout << "Unsure of the idea that you wish to leave your only shelter, you hide behind the bar counter, praying that the incessant knocking stops." << endl;
+	cout << "The knocking ends. For a brief moment, you stop to consider if it was only a drunkard, and the idea almost puts you at ease.\n";
 	cout << "Maybe you're still a little woozy and just imagining stuff...\n";
 	cout << "\nPress ENTER to continue.\n" << endl;
 	cin.ignore();
@@ -371,7 +429,8 @@ void coward() {
 	cout << "You hold your breath behind the counter as the thing slinks about the place. The stench of rot permeates the air as it gets ever so closer to the counter...\n";
 	cout << "\nPress ENTER to continue.\n" << endl;
 	cin.get(proceed);
-	cout << "Its face is contorted and frozen in a moment of sheer pain and anguish before its initial death, and within its chest is a giant parasite burrowed inside." << endl;
+	cout << "Its face is contorted and frozen in a moment of sheer pain and anguish before its initial death, and burrowed inside its chest is a giant parasite." << endl;
+	infected_ascii();
 	cout << "You know that you have to act now. You spring up, ready to finally deal with this foul mockery of life before you.\n";
 	cout << "\nGet ready to fight! Press ENTER to continue.\n" << endl;
 	cin.get(proceed);
@@ -391,104 +450,132 @@ void coward() {
 		enemy1_hp = 1738;
 		battle();
 	}
-
+	cout << "\nYou exit the sewers near the edge of twon, and enter a forest...\n";
 }
 
-
 void forest() {
-	string spring_choice;
-	bool spring_choice_valid = false;
-	//int bridge_choice //Cole got a warning that was fixed with this, but I didn't. Keeping it just in case of your two gets an error or warning that this might fix -Ruby
-	bool bridge_choice_valid = false;
-	cout << "Making it into the depths of the expansive forest, you hear outward the outward groans and grunts of the dearly departed. Spores permeate the thick fog within." << endl;
-	cout << "Luckily, you find a hot springs, completely isolated from the rest of the forest." << endl;
+	std::cout << "\nEntering the forest, you see another one of those monsters, along with two of the parasites.\n";
+	std::cout << "Get ready to battle! Press ENTER to continue";
+	cin.get(proceed);
+	cin.ignore();
+	enemy1 = 2;
+	enemy1_hp = 75;
+	enemy2 = 1;
+	enemy2_hp = 25;
+	enemy3 = 1;
+	enemy3_hp = 25;
+	battle();
+
+	std::cout << "Making it into the depths of the expansive forest, you hear groans and grunts of the dearly departed. Spores permeate the thick fog within." << endl;
+	std::cout << "Luckily, you find a hot spring, completely isolated from the rest of the forest." << endl;
+	std::cout << "Hit ENTER to continue";
 	cin.get(proceed);
 	cin.ignore(); //having it here did work for me -Ruby
 
-	while (spring_choice_valid == false) {
-		cout << "Will you take a break in the hot springs? Enter YES or NO, then hit ENTER." << endl;
+	while (spring_choice != 1 && spring_choice != 2) {
+		std::cout << "Will you take a break in the hot springs? Type the number of your choice, and hit ENTER." << endl;
+		std::cout << "1. Yes\n2. No\n";
 		cin >> spring_choice;
-		if (spring_choice == "YES" || spring_choice == "yes") {
-			player_hp = 150;
+		if (spring_choice == 1) {
+			player_hp = 125; 
 			player_sanity = 100;
 
 			special_point_upgrade = true;
 			special_point_max = 200;
 			special_point = 200;
 
-			cout << "You Special Points are increased to 200" << endl;
-			cout << "You feel a whole lot better. Onward..." << endl;
-			spring_choice_valid = true;
+			std::cout << "You Special Points are increased to 200" << endl;
+			std::cout << "You feel a whole lot better. Onward..." << endl;
 		}
-		else if (spring_choice == "NO" || spring_choice == "no") {
-			cout << "You decide to not take a bath. Onward..." << endl;
-			spring_choice_valid = true;
+		else if (spring_choice == 2) {
+			std::cout << "You decide to not take a bath. Onward..." << endl;
+			std::cout << "\nOut of the corner of your eye, you spot a discarded ";
+			if (class_choice == 1) {
+				std::cout << "halberd";
+			}
+			else {
+				std::cout << "quarterstaff";
+			}
+			std::cout << ", it's seen better days, but even in this state, it's a powerful weapon.\n";
+			weapon3 = true;
 		}
 	}
-	cout << "\nThis game has a thing known as Special Points, or SP for short. These can be used for spells or stronger weapon attack (called Double Down)";
+	//Commented out because this line doesn't fit here at all - Nate
+	//cout << "\nThis game has a thing known as Special Points, or SP for short. These can be used for spells or stronger weapon attack (called Double Down)";
 	cin.get(proceed);
 	cin.ignore(); //having it here did work for me -Ruby
-	cout << "As you venture forth through the forest, you stumble upon a bridge, its cobblestone exterior mixed with the same pus and broils that you saw on the bags of flesh moments before." << endl;
-	cout << "On the other side of the bridge, a horrid beast that was once a bear stands, its arms broken and battered, with the same rancid, hardened sinew formed into disgusting organic blades." << endl;
-	cout << "Press ENTER to continue." << endl;
+	std::cout << "As you venture forth through the forest, you stumble upon a bridge, its cobblestone exterior mixed with the same pus and broils that you saw on the bags of flesh moments before." << endl;
+	std::cout << "On the other side of the bridge, a horrid beast that was once a bear stands, its arms broken and battered, with the same rancid, hardened sinew formed into disgusting organic blades." << endl;
+	std::cout << "Press ENTER to continue." << endl;
 	cin.ignore();
 	cin.get(proceed);
-	cout << "So, you have a few options on your hands. You can either hide under the bridge, or fight the abomination head-on." << endl;
-	while (bridge_choice_valid == false) {
-		cout << "1. Fight the bear\n2. Hide under the bridge\n";
-		cout << "Select the number corresponding to your choice, then hit ENTER.\n";
+	std::cout << "You have a few options on your hands. You can either hide under the bridge, or fight the abomination head-on." << endl;
+	while (bridge_choice != 1 && bridge_choice != 2) {
+		std::cout << "1. Fight the bear\n2. Hide under the bridge\n";
+		std::cout << "Select the number of your choice, then hit ENTER.\n";
 		cin >> bridge_choice;
 		if (bridge_choice == 1 && player_sanity >= 75) {
-			cout << "Knowing that you're gonna have to fight them regardless, you shape up and charge towards the giant mutated bear, who is just as ready to kill as you are.\n";
-			cout << "\nGet ready to fight! Press ENTER to continue.\n" << endl;
+			std::cout << "Knowing that you'll need to fight them regardless, you shape up and charge towards the giant mutated bear, who is just as ready to kill as you are.\n";
+			std::cout << "\nGet ready to fight! Press ENTER to continue.\n" << endl;
 			cin.ignore();
 			cin.get(proceed);
 			enemy1 = 3;
-			enemy1_hp = 85;
+			enemy1_hp = 165;
 			battle();
-			bridge_choice_valid = true;
 		}
 		else if (bridge_choice == 2 && player_sanity >= 75) {
-			cout << "You can't take that on. So, you decide to slide under the bridge and hope to God that the thing will move.\n";
+			cout << "You can't take that on, so you decide to slide under the bridge and hope to God that the thing will move.\n";
 			cout << "Giant stomps cause your adrenaline to peak. Above your head, the putrid monster's thunderous footsteps crackle with every hit against the loose stone.\n";
-			cout << "Going, going... Gone. It leaves, and you're able to get up to the top.\n";
-			bridge_choice_valid = true;
-
+			cout << "Going, going... gone. It leaves, and you're able to get up to the top.\n";
 		}
-		else if (player_sanity <= 75) {
-			cout << "The stress was getting to you. You charge head-on, ready to fight the beast. It must die.\n";
-			cout << "\nGet ready to fight! Press ENTER to continue.\n" << endl;
+		else if (player_sanity < 75) {
+			std::cout << "The stress was getting to you. You charge head-on, ready to fight the beast. It must die.\n";
+			std::cout << "\nPrepare for a tought fight! Press ENTER to continue.\n" << endl;
 			cin.ignore();
 			cin.get(proceed);
 			enemy1 = 3;
-			enemy1_hp = 85;
+			enemy1_hp = 165;
 			battle();
-			bridge_choice_valid = true;
 		}
 	}
-	cout << "Thank you for playing the demo! Please be sure to fill out the QA form and let us know of any issues!\n";
+	std::cout << "\nThank you for playing the second demo! Feel free to play it again and make different choices.\nPlease be sure to fill out the QA form and let us know of any issues!\n";
+	cin.get(proceed); //I remembered that the exe would exit as soon as it ended, so we needed these.
+	cin.ignore(); 
 }
 
 int main() {
+	tavern_choice = 0;
+	bridge_choice = 0;
+	spring_choice = 0;
+	class_choice = 0;
+	player_hp = 100;
+	special_point = 100;
+	special_point_max = 100;
+	special_point_upgrade = false;
+	player_sanity = 100;
+	weapon2 = false;
+	weapon3 = false;
+	weapon4 = false;
+	light = false;
+	magic_missile = false;
+	freeze = false;
+	fireball = false;
+
+	std::cout << "This game is best experienced in fullscreen or a maximized window.\nHit F11 or click on the button next to the X in the top left corner.";
+	Sleep(10000);
+	team_logo_ascii();
+	std::cout << "\nA game by Spyware Interactive\n";
+	Sleep(5000);
+
 	while (class_choice != 1 && class_choice != 2) {
-		cout << "\nYou're slightly coming to. You can't remember your name, but you at least remember your occupation. You are a...\n1. Knight\n2. Mage (Coming Soon)\nType the number of your choice and press ENTER to continue.\n";
+		cout << "\nYou're slightly coming to. You can't remember your name, but you at least remember your occupation. You are a...\n1. Knight\n2. Mage ()\nType the number of your choice and press ENTER to continue.\n";
 		cin >> class_choice;
-		//cout << class_choice;
-		loop += 1;
-		if (loop > 10) {
-			exit(0); //Ends code -Ruby
-		}
-
-		if (class_choice == 1) {
-			weapon1 = true; //Arming Sword -Ruby
-		}
-
-		else if (class_choice == 2) {
-			weapon1 = true; //Bo Staff -Ruby
-			spell1 = true; //The Light Spell -Ruby
-			spell2 = true; //Magic Missile Spell -Ruby
+		if (class_choice == 2) {
+			//light = true; //The Light Spell -Ruby //Commented out because it's unfinished - Nate
+			magic_missile = true; //Magic Missile Spell -Ruby
 		}
 	}
+	weapon2 = true;
 	cout << "\nYou awaken in a hazy stupor, the past few nights seeming to be nothing more than a barrage of unpaid bar tabs and enough liver damage to make a dwarf go cold turkey.";
 	cout << "\nThe lights are dim, and nobody else is in sight. Perhaps the barkeep closed up for the day and didn't bother to drag you out. Can't say you blame them, though.";
 	cout << "\nEver since your partner went missing after last week's expedition, you've turned to drinking and vice to keep your mind off of it.";
@@ -509,23 +596,19 @@ int main() {
 
 	if (tavern_choice == 1) {
 		door_kicked();
-		//forest();
+		forest();
 		exit(0);
 	}
 
 	else if (tavern_choice == 2) {
 		backdoor();
-		//forest();
+		forest();
 		exit(0);
 	}
 
 	else if (tavern_choice == 3) {
 		coward();
-		//forest();
+		forest();
 		exit(0);
-	}
-
-	else {
-		cout << "Incorrect. Please select a valid option." << endl;
 	}
 }
