@@ -7,7 +7,7 @@
 using namespace std;
 
 int class_choice = 0; // 1 is knight, 2 is mage
-long long player_hp = 100; //long long makes it so the amount removed can be large
+long long player_hp = 100;
 int player_atk = 20;
 int player_sanity = 100;
 int player_def; //0 is unarmored //1 is starting armor //2 is better armor
@@ -19,12 +19,14 @@ vector<string> player_inventory{ "Fists" }; //Is an array //Change number in the
 //^may switch the vector to list, having issues adding values to it
 
 int tavern_choice = 0;
+int bridge_choice;
 
 int enemy1_hp = 0;
 int enemy2_hp = 0;
 int enemy3_hp = 0;
 
-//0 is dead, 1 is parasite, 2 is infected, 3 is metal pipe
+
+//0 is dead, 1 is parasite, 2 is infected, 3 is the juggernaut, 4 is the boss. metal pipe is 1738
 //Parasite has 25hp, infected has 75hp, juggernaut has 150hp, metal pipe has 1738hp
 int enemy1 = 0;
 int enemy2 = 0;
@@ -50,6 +52,11 @@ void enemy_turn(int current_enemy) {
 		player_sanity -= 10;
 	}
 	else if (current_enemy == 3) {
+		cout << "\nEnemy Juggernaut attacks!\n";
+		player_hp -= 15;
+		player_sanity -= 25;
+	}
+	else if (current_enemy == 1738) {
 		cout << "\nThe metal pipe breaks your kneecaps!\n";
 		player_hp -= 194530298001;
 		player_sanity -= 420;
@@ -58,7 +65,7 @@ void enemy_turn(int current_enemy) {
 
 void battle() {
 	while (true) {
-		if (player_hp <= 0 && enemy1 == 3) {
+		if (player_hp <= 0 && enemy1 == 1738) {
 			cout << "\n'but the Lord laughs at the wicked, for he knows their day is coming.'\n";
 			cin.ignore();
 			cin.get(proceed); //continues by just pressing 'enter'
@@ -86,7 +93,7 @@ void battle() {
 			crit_chance = random_crit(1, 4);
 			if (crit_chance == 1) {
 				cout << "\nYou feel a little lucky...\n";
-				player_atk = 12;
+				player_atk = 15;
 			}
 			else {
 				player_atk = 6;
@@ -221,7 +228,7 @@ void coward() {
 		cout << "\n                                                                       ============\n                                                                ======================\n                                                           ===========================\n                                                          ============================\n                                                    ==================================\n                                                    ===============================\n                                              ====================================\n                                         ===================================\n                                       =====================================\n                                  ====================================\n                                 ====================================\n                           =====================================\n                           ===============================\n                     ====================================\n               ====================================\n              =====================================\n            =================================\n           =====      =================\n           =====      =================\n           =====      ===========\n            ====================\n              =============\n                =========";
 		cout << "\nThis looks like a one-way trip... Pray to your god, and press ENTER to accept your fate.\n" << endl;
 		cin.get(proceed);
-		enemy1 = 3;
+		enemy1 = 1738;
 		enemy1_hp = 1738;
 		battle();
 	}
@@ -232,8 +239,10 @@ void coward() {
 void forest() {
 	string spring_choice;
 	bool spring_choice_valid = false;
+	int bridge_choice;
+	bool bridge_choice_valid = false;
 	cout << "Making it into the depths of the expansive forest, you hear outward the outward groans and grunts of the dearly departed. Spores permeate the thick fog within." << endl;
-	cout << "Luckily, you find a hot springs, completely isolated from the rest of the forest." << endl; 
+	cout << "Luckily, you find a hot springs, completely isolated from the rest of the forest." << endl;
 
 	while (spring_choice_valid == false) {
 		cout << "Will you take a break in the hot springs? Enter YES or NO, then hit ENTER." << endl;
@@ -241,6 +250,7 @@ void forest() {
 		if (spring_choice == "YES" || spring_choice == "yes") {
 			player_hp = 150;
 			player_sanity = 100;
+			// If the player is a mage, give them fireball and freeze. Also increase their SP. - Cole
 			cout << "You feel a whole lot better. Onward..." << endl;
 			spring_choice_valid = true;
 		}
@@ -249,7 +259,45 @@ void forest() {
 			spring_choice_valid = true;
 		}
 	}
+	cout << "As you venture forth through the forest, you stumble upon a bridge, its cobblestone exterior mixed with the same pus and broils that you saw on the bags of flesh moments before." << endl;
+	cout << "On the other side of the bridge, a horrid beast that was once a bear stands, its arms broken and battered, with the same rancid, hardened sinew formed into disgusting organic blades." << endl;
+	cout << "Press ENTER to continue." << endl;
+	cin.ignore();
+	cin.get(proceed);
+	cout << "So, you have a few options on your hands. You can either hide under the bridge, or fight the abomination head-on." << endl;
+	while (bridge_choice_valid == false) {
+		cout << "1. Fight the bear\n2. Hide under the bridge\n";
+		cout << "Select the number corresponding to your choice, then hit ENTER.\n";
+		cin >> bridge_choice;
+		if (bridge_choice == 1 && player_sanity >= 75){
+			cout << "Knowing that you're gonna have to fight them regardless, you shape up and charge towards the giant mutated bear, who is just as ready to kill as you are.\n";
+			cout << "\nGet ready to fight! Press ENTER to continue.\n" << endl;
+			cin.ignore();
+			cin.get(proceed);
+			enemy1 = 3;
+			enemy1_hp = 85;
+			battle();
+			bridge_choice_valid = true;
+		}
+		else if (bridge_choice == 2 && player_sanity >= 75) {
+			cout << "You can't take that on. So, you decide to slide under the bridge and hope to God that the thing will move.\n";
+			cout << "Giant stomps cause your adrenaline to peak. Above your head, the putrid monster's thunderous footsteps crackle with every hit against the loose stone.\n";
+			cout << "Going, going... Gone. It leaves, and you're able to get up to the top.\n";
+			bridge_choice_valid = true;
 
+		}
+		else if (player_sanity <= 75) {
+			cout << "The stress was getting to you. You charge head-on, ready to fight the beast. It must die.\n";
+			cout << "\nGet ready to fight! Press ENTER to continue.\n" << endl;
+			cin.ignore();
+			cin.get(proceed);
+			enemy1 = 3;
+			enemy1_hp = 85;
+			battle();
+			bridge_choice_valid = true;
+		}
+	}
+	cout << "Thank you for playing the demo! Please be sure to fill out the QA form and let us know of any issues!\n";
 }
 
 int main() {
@@ -291,19 +339,19 @@ int main() {
 
 	if (tavern_choice == 1) {
 		door_kicked();
-		//forest();
+		forest();
 		exit(0);
 	}
 
 	else if (tavern_choice == 2) {
 		backdoor();
-		//forest();
+		forest();
 		exit(0);
 	}
 
 	else if (tavern_choice == 3) {
 		coward();
-		//forest();
+		forest();
 		exit(0);
 	}
 
