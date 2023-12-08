@@ -304,6 +304,7 @@ void battle() {
 					if (attack_choice == 3) {
 						enemy3_status_condition = true;
 					}
+					cout << "The enemy is blinded\n";
 				}
 			}
 			else if (spell_choice == 2 && special_point >= 25) { //Magic Missile -Ruby
