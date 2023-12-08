@@ -115,6 +115,7 @@ void enemy_turn(int current_enemy) {
 		//These special interactions are a cool idea, but since they're in a place that wouldn't work,
 		//and they only exist for a fight most people won't see, that they'll lose anyway, they're commented out for now.
 		//I have more important things to fix - Nate
+		//It will be moved to the battle function later -Ruby
 
 		/*if (spell_choice == 1) { //Light Spell -Ruby
 			enemy1_status_condition = false;
@@ -297,10 +298,10 @@ void battle() {
 					if (attack_choice == 1) {
 						enemy1_status_condition = true;
 					}
-					if (enemy2_status_condition == 2) {
+					if (attack_choice == 2) {
 						enemy2_status_condition = true;
 					}
-					if (enemy3_status_condition == 2) {
+					if (attack_choice == 3) {
 						enemy3_status_condition = true;
 					}
 				}
@@ -477,7 +478,7 @@ void forest() {
 		std::cout << "1. Yes\n2. No\n";
 		cin >> spring_choice;
 		if (spring_choice == 1) {
-			player_hp = 125; 
+			player_hp = 125;
 			player_sanity = 100;
 
 			special_point_upgrade = true;
@@ -540,7 +541,7 @@ void forest() {
 	}
 	std::cout << "\nThank you for playing the second demo! Feel free to play it again and make different choices.\nPlease be sure to fill out the QA form and let us know of any issues!\n";
 	cin.get(proceed); //I remembered that the exe would exit as soon as it ended, so we needed these.
-	cin.ignore(); 
+	cin.ignore();
 }
 
 int main() {
@@ -568,7 +569,7 @@ int main() {
 	Sleep(5000);
 
 	while (class_choice != 1 && class_choice != 2) {
-		cout << "\nYou're slightly coming to. You can't remember your name, but you at least remember your occupation. You are a...\n1. Knight\n2. Mage ()\nType the number of your choice and press ENTER to continue.\n";
+		cout << "\nYou're slightly coming to. You can't remember your name, but you at least remember your occupation. You are a...\n1. Knight\n2. Mage \nType the number of your choice and press ENTER to continue.\n";
 		cin >> class_choice;
 		if (class_choice == 2) {
 			//light = true; //The Light Spell -Ruby //Commented out because it's unfinished - Nate
