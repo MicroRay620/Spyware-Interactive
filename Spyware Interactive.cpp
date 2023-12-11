@@ -20,12 +20,16 @@ int weapon_choice = 0;
 int spell_choice = 0;
 int crit_chance = 0;
 int double_down_choice;
+int player_blind_turn = 0;
 long long int player_hp = 100; //long long makes it so the amount removed can be large, the warning that is prompting this change is from Metal Pipe's Damage -Ruby
 char proceed = ' '; //have the = ' ' removes an error where it is saying get(proceed) is not an acceptable input -Ruby
-bool player_status_condition = false;
 bool double_down = false;
 bool special_point_upgrade = false;
 bool battle_lost = false;
+bool player_turn = true;
+list<string> player_status_condition;
+list<string>::iterator init_player_status_condition;
+long long player_status_size = player_status_condition.size(); //How many values are in the list -Ruby
 
 //Weapons
 //The battle system needed a lot of changes to work with multiple weapons, but adding a variable for your fist is pointless, we don't have a break-your-hand mechanic. - Nate
@@ -48,19 +52,22 @@ int enemy1_hp = 0;
 int enemy2_hp = 0;
 int enemy3_hp = 0;
 
+int enemy1_blind_turn = 0;
+int enemy2_blind_turn = 0;
+int enemy3_blind_turn = 0;
+
 //0 is dead, 1 is parasite, 2 is infected, 3 is bear/juggernaut, 4 is gravemind, 1738 is metal pipe
 //Parasite has 25hp, infected has 75hp, juggernaut has 165hp, metal pipe has 1738hp
 int enemy1 = 0;
 int enemy2 = 0;
 int enemy3 = 0;
 
-bool enemy1_status_condition = false;
-bool enemy2_status_condition = false;
-bool enemy3_status_condition = false;
+bool enemy1_blind = false;
+bool enemy2_blind = false;
+bool enemy3_blind = false;
 bool froze_metal_pipe = false;
 
 int loop = 0; //exists to stop infinite loops when something breaks, we shouldn't need it anymore. - Nate
-
 
 //Functions for the ACSII art, I should have implemented this a while ago but we didn't have time - Nate
 void game_over_ascii() {
@@ -90,25 +97,76 @@ int random_crit(int low, int high) {
 }
 
 void player_status() {
-	if (player_status_condition == true && spell_choice == 1) { //when the player is blinded -Ruby
-		player_atk = player_atk / 2;
+	if (spell_choice == 1) { //when the player is blinded -Ruby
+		player_turn = false;
+	}
+}
+
+void blind_turn() {
+	if (enemy1_blind == true) {
+		if (enemy1_blind_turn >= 3) {
+			enemy1_blind = false;
+			enemy1_blind_turn = 0;
+			cout << "Enemy 1 has recovered from blindness" << endl;
+		}
+		else {
+			enemy1_blind_turn += 1;
+			cout << "Enemy1 has been blinded for " << enemy1_blind_turn << " turns" << endl;
+		}
+	}
+	if (enemy2_blind == true) {
+		if (enemy2_blind_turn >= 3) {
+			enemy2_blind = false;
+			enemy2_blind_turn = 0;
+			cout << "Enemy 2 has recovered from blindness" << endl;
+		}
+		else {
+			enemy2_blind_turn += 0;
+			cout << "Enemy2 has been blinded for " << enemy2_blind_turn << " turns" << endl;
+		}
+	}
+	if (enemy3_blind == true) {
+		if (enemy3_blind_turn >= 3) {
+			enemy3_blind = false;
+			enemy3_blind_turn = 0;
+			cout << "Enemy 3 has recovered from blindness" << endl;
+		}
+		else {
+			enemy3_blind_turn += 3;
+			cout << "Enemy3 has been blinded for " << enemy3_blind_turn << " turns" << endl;
+		}
 	}
 }
 
 void enemy_turn(int current_enemy) {
 	if (current_enemy == 1) {
 		cout << "\nEnemy parasite attacks!\n";
-		player_hp -= 5;
+		if (enemy1_blind == true) {
+			player_hp -= 0;
+		}
+		else {
+			player_hp -= 5;
+		}
 		player_sanity -= 5;
 	}
 	else if (current_enemy == 2) {
 		cout << "\nEnemy infected attacks!\n";
-		player_hp -= 10;
+		if (enemy2_blind == true) {
+			player_hp -= 0;
+		}
+		else {
+			player_hp -= 10;
+		}
 		player_sanity -= 10;
 	}
 	else if (current_enemy == 3) {
 		cout << "\nEnemy Juggernaut attacks!\n";
-		player_hp -= 15;
+		if (enemy3_blind == true) {
+			player_hp -= 0;
+		}
+		else {
+			player_hp -= 15;
+		}
 		player_sanity -= 10; //The old value was 25, a bit extreme for a boss fight that's supposed to take many turns. - Nate
 	}
 	else if (current_enemy == 1738) {
@@ -117,23 +175,6 @@ void enemy_turn(int current_enemy) {
 		//I have more important things to fix - Nate
 		//It will be moved to the battle function later -Ruby
 
-		/*if (spell_choice == 1) { //Light Spell -Ruby
-			enemy1_status_condition = false;
-			player_status_condition = true;
-			player_status();
-		}
-		else if (spell_choice == 3) { //Freeze Spell -Ruby
-			enemy1_status_condition = true;
-			if (enemy1_status_condition == true) {
-				player_sanity -= 42; //The answer to life, the universe, and everything in Hitchhiker's Guide to the Galaxy -Ruby
-			}
-		}
-		else if (spell_choice == 4) {
-			enemy1_hp = 1;
-		}
-		else {
-			player_atk = 0;
-		} */
 		cout << "\nThe metal pipe breaks your kneecaps!\n";
 		player_hp -= 194530298001;
 		player_sanity -= 420;
@@ -143,7 +184,7 @@ void enemy_turn(int current_enemy) {
 void battle() {
 	while (true) {
 		turn_special_point = special_point; //Restores SP if something goes wrong between using double down or a spell
-		if (player_hp <= 0 && enemy1 == 3) {
+		if (player_hp <= 0 && enemy1 == 1738) {
 			cout << "\n'but the Lord laughs at the wicked, for he knows their day is coming.'\n";
 			cin.ignore();
 			cin.get(proceed); //continues by just pressing 'enter' -Ruby
@@ -160,6 +201,9 @@ void battle() {
 		}
 		if (enemy1 == 0 && enemy2 == 0 && enemy3 == 0) {
 			player_hp = 100;
+			enemy1_blind = false;
+			enemy2_blind = false;
+			enemy3_blind = false;
 
 			//If and first else if will raise SP when you have less than max but not more than the max -25, else will raise SP to the max when it is at max -24 or more.
 			//The else will never run with how we currently use SP, but we might change values and I'd rather not have to add it again later -Nate 
@@ -179,6 +223,8 @@ void battle() {
 			cin.get(proceed);
 			break;
 		}
+
+		blind_turn();
 
 		cout << "\nCurrent HP: " << player_hp << endl;
 		cout << "Current SP: " << special_point << endl;
@@ -292,34 +338,6 @@ void battle() {
 
 			cin >> spell_choice;
 
-			if (spell_choice == 1 && light == true && special_point >= 25) { //Light Spell -Ruby 
-				int blind_chance = random_crit(1, 8);
-				if (blind_chance == 1) {
-					if (attack_choice == 1) {
-						enemy1_status_condition = true;
-					}
-					if (attack_choice == 2) {
-						enemy2_status_condition = true;
-					}
-					if (attack_choice == 3) {
-						enemy3_status_condition = true;
-					}
-					cout << "The enemy is blinded\n";
-				}
-			}
-			else if (spell_choice == 2 && special_point >= 25) { //Magic Missile -Ruby
-				special_point -= 25;
-				player_atk = 35;
-			}
-			else if (spell_choice == 3) { //This spell and the next one are too unfinished, they won't be in QA2 - Nate
-				random_crit(1, 4);
-
-			}
-			else {
-				special_point = turn_special_point;
-				continue;
-			}
-
 		}
 		else {
 			special_point = turn_special_point;
@@ -339,7 +357,7 @@ void battle() {
 
 		cin >> attack_choice; //For choosing which enemy to attack - Nate
 
-		if (attack == 1 || spell_choice == 2) { //This code only runs when using a weapon or magic missile, the other spells can't fit this same structure of removing hp based on attack - Nate
+		if (attack == 1) { //This code only runs when using a weapon or magic missile, the other spells can't fit this same structure of removing hp based on attack - Nate
 			if (attack_choice == 1 && enemy1 != 0) {
 				cout << "\nEnemy 1 takes " << player_atk << " damage!\n";
 				enemy1_hp -= player_atk;
@@ -370,9 +388,66 @@ void battle() {
 			}
 
 		}
+
+		else if (attack == 2) {
+			if (enemy1 == 1738) {
+				cout << "Test\n";
+				if (spell_choice == 1 && light == true && special_point >= 25) { //Light Spell -Ruby
+					cout << "The pipe reflected your light and blinded you instead\n";
+					enemy1_blind = false;
+					player_status_condition.push_front("Blind"); //adds the blind condition to the player -Ruby
+					player_status();
+				}
+				else if (spell_choice == 3) { //Freeze Spell -Ruby
+					enemy1_blind = true;
+					if (enemy1_blind == true) {
+						player_sanity -= 42; //The answer to life, the universe, and everything in Hitchhiker's Guide to the Galaxy -Ruby
+					}
+				}
+				else if (spell_choice == 4) {
+					enemy1_hp = 1;
+				}
+				else {
+					player_atk = 0;
+				}
+			}
+
+			if (spell_choice == 1 && light == true && special_point >= 25) { //Light Spell -Ruby 
+				special_point -= 10;
+				int blind_chance = random_crit(1, 4);
+				if (blind_chance == 1) {
+					if (attack_choice == 1) {
+						enemy1_blind = true;
+					}
+					if (attack_choice == 2) {
+						enemy2_blind = true;
+					}
+					if (attack_choice == 3) {
+						enemy3_blind = true;
+					}
+					cout << "The enemy is blinded\n";
+				}
+				else {
+					cout << "The enemy wasn't blinded\n";
+				}
+			}
+			else if (spell_choice == 2 && special_point >= 25) { //Magic Missile -Ruby
+				special_point -= 25;
+				player_atk = 35;
+			}
+			else if (spell_choice == 3) { //This spell and the next one are too unfinished, they won't be in QA2 - Nate
+				random_crit(1, 4);
+			}
+			else {
+				special_point = turn_special_point;
+				continue;
+			}
+		}
+
 		else {
 			continue;
 		}
+		
 		//enemy turns start here
 		enemy_turn(enemy1);
 		enemy_turn(enemy2);
@@ -448,7 +523,7 @@ void coward() {
 		cout << "\n                                                                       ============\n                                                                ======================\n                                                           ===========================\n                                                          ============================\n                                                    ==================================\n                                                    ===============================\n                                              ====================================\n                                         ===================================\n                                       =====================================\n                                  ====================================\n                                 ====================================\n                           =====================================\n                           ===============================\n                     ====================================\n               ====================================\n              =====================================\n            =================================\n           =====      =================\n           =====      =================\n           =====      ===========\n            ====================\n              =============\n                =========";
 		cout << "\nThis looks like a one-way trip... Pray to your god, and press ENTER to accept your fate.\n" << endl;
 		cin.get(proceed);
-		enemy1 = 3;
+		enemy1 = 1738;
 		enemy1_hp = 1738;
 		battle();
 	}
@@ -541,7 +616,7 @@ void forest() {
 		}
 	}
 	std::cout << "\nThank you for playing the second demo! Feel free to play it again and make different choices.\nPlease be sure to fill out the QA form and let us know of any issues!\n";
-	cin.get(proceed); //I remembered that the exe would exit as soon as it ended, so we needed these.
+	cin.get(proceed); //I remembered that the exe would exit as soon as it ended, so we needed these. -Nate
 	cin.ignore();
 }
 
@@ -554,7 +629,7 @@ int main() {
 	special_point = 100;
 	special_point_max = 100;
 	special_point_upgrade = false;
-	player_sanity = 100;
+	player_sanity = 100; //Change back to 100 -Ruby
 	weapon2 = false;
 	weapon3 = false;
 	weapon4 = false;
@@ -571,9 +646,11 @@ int main() {
 
 	while (class_choice != 1 && class_choice != 2) {
 		cout << "\nYou're slightly coming to. You can't remember your name, but you at least remember your occupation. You are a...\n1. Knight\n2. Mage \nType the number of your choice and press ENTER to continue.\n";
+
 		cin >> class_choice;
+
 		if (class_choice == 2) {
-			//light = true; //The Light Spell -Ruby //Commented out because it's unfinished - Nate
+			light = true; //The Light Spell -Ruby //Commented out because it's unfinished - Nate
 			magic_missile = true; //Magic Missile Spell -Ruby
 		}
 	}
