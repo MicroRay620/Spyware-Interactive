@@ -107,33 +107,33 @@ void blind_turn() {
 		if (enemy1_blind_turn >= 3) {
 			enemy1_blind = false;
 			enemy1_blind_turn = 0;
-			cout << "Enemy 1 has recovered from blindness" << endl;
+			cout << "Enemy 1 has recovered from blindness!" << endl;
 		}
 		else {
 			enemy1_blind_turn += 1;
-			cout << "Enemy1 has been blinded for " << enemy1_blind_turn << " turns" << endl;
+			cout << "Enemy1 has been blinded for " << enemy1_blind_turn << " turns." << endl;
 		}
 	}
 	if (enemy2_blind == true) {
 		if (enemy2_blind_turn >= 3) {
 			enemy2_blind = false;
 			enemy2_blind_turn = 0;
-			cout << "Enemy 2 has recovered from blindness" << endl;
+			cout << "Enemy 2 has recovered from blindness!" << endl;
 		}
 		else {
 			enemy2_blind_turn += 0;
-			cout << "Enemy2 has been blinded for " << enemy2_blind_turn << " turns" << endl;
+			cout << "Enemy2 has been blinded for " << enemy2_blind_turn << " turns." << endl;
 		}
 	}
 	if (enemy3_blind == true) {
 		if (enemy3_blind_turn >= 3) {
 			enemy3_blind = false;
 			enemy3_blind_turn = 0;
-			cout << "Enemy 3 has recovered from blindness" << endl;
+			cout << "Enemy 3 has recovered from blindness!" << endl;
 		}
 		else {
 			enemy3_blind_turn += 3;
-			cout << "Enemy3 has been blinded for " << enemy3_blind_turn << " turns" << endl;
+			cout << "Enemy3 has been blinded for " << enemy3_blind_turn << " turns." << endl;
 		}
 	}
 }
@@ -229,7 +229,7 @@ void battle() {
 		cout << "\nCurrent HP: " << player_hp << endl;
 		cout << "Current SP: " << special_point << endl;
 		if (class_choice == 2) {
-			cout << "\nOpen weapon selection or spell selection?\nType the number and press ENTER\n1. Weapons\n2. Spells\n";
+			cout << "\nOpen weapon selection or spell selection?\nType the number and press ENTER.\n1. Weapons\n2. Spells\n";
 			cin >> attack;
 		}
 		else {
@@ -321,7 +321,7 @@ void battle() {
 			}
 		}
 		else if (attack == 2) { //Spells -Ruby
-			cout << "\nWhich spell would you like to use...";
+			cout << "\nWhich spell would you like to use?";
 			if (light == true) {
 				cout << "\n1. Light 25 SP";
 			}
@@ -393,7 +393,7 @@ void battle() {
 			if (enemy1 == 1738) {
 				cout << "Test\n";
 				if (spell_choice == 1 && light == true && special_point >= 25) { //Light Spell -Ruby
-					cout << "The pipe reflected your light and blinded you instead\n";
+					cout << "The pipe reflected your light and blinded you instead!\n";
 					enemy1_blind = false;
 					player_status_condition.push_front("Blind"); //adds the blind condition to the player -Ruby
 					player_status();
@@ -444,7 +444,7 @@ void battle() {
 		else {
 			continue;
 		}
-		
+
 		//enemy turns start here
 		enemy_turn(enemy1);
 		enemy_turn(enemy2);
@@ -529,9 +529,8 @@ void coward() {
 
 void forest() {
 	std::cout << "\nEntering the forest, you see another one of those monsters, along with two of the parasites.\n";
-	std::cout << "Get ready to battle! Press ENTER to continue";
+	std::cout << "Get ready to battle! Press ENTER to continue.";
 	cin.get(proceed);
-	cin.ignore();
 	enemy1 = 2;
 	enemy1_hp = 75;
 	enemy2 = 1;
@@ -542,9 +541,10 @@ void forest() {
 
 	std::cout << "Making it into the depths of the expansive forest, you hear groans and grunts of the dearly departed. Spores permeate the thick fog within." << endl;
 	std::cout << "Luckily, you find a hot spring, completely isolated from the rest of the forest." << endl;
-	std::cout << "Hit ENTER to continue";
+	std::cout << "Hit ENTER to continue.";
+	cin.ignore();
 	cin.get(proceed);
-	cin.ignore(); //having it here did work for me -Ruby
+
 
 	while (spring_choice != 1 && spring_choice != 2) {
 		std::cout << "Will you take a break in the hot springs? Type the number of your choice, and hit ENTER." << endl;
@@ -558,7 +558,7 @@ void forest() {
 			special_point_max = 200;
 			special_point = 200;
 
-			std::cout << "You Special Points are increased to 200" << endl;
+			std::cout << "You Special Points are increased to 200!" << endl;
 			std::cout << "You feel a whole lot better. Onward..." << endl;
 		}
 		else if (spring_choice == 2) {
@@ -612,11 +612,53 @@ void forest() {
 			battle();
 		}
 	}
-	std::cout << "\nThank you for playing the second demo! Feel free to play it again and make different choices.\nPlease be sure to fill out the QA form and let us know of any issues!\n";
-	cin.get(proceed); //I remembered that the exe would exit as soon as it ended, so we needed these. -Nate
+	std::cout << "\nOn top of the bridge, you sit down and just take in the absolute miserable state you're in.\n";
+	std::cout << "\nYou're lost, battered, and completely unsure of how you could even end this madness enveloping around you.\n";
+	std::cout << "\nHowever, you feel that the only key to getting through this is to barge into ground zero on your left, which is more forestation consumed by the parasite.\n";
+	Sleep(3000);
+	std::cout << "\nYou haven't seen anyone. In fact, you could be the last person on this planet for all you know. The screaming has stopped for a considerable amount of time.\n";
+	Sleep(3000);
+	std::cout << "\nYou might as well try to get in there and find out what's causing this, or die trying.\n";
+	std::cout << "\nPress ENTER to begin your final stretch...\n";
+	cin.get(proceed);
 	cin.ignore();
 }
 
+void finale() {
+	std::cout << "\nImmediately, as you trek into the spore-ridden air and revolting pus and flesh-fungus, you are assaulted by three infected!\n";
+	Sleep(3000);
+	enemy1 = 2;
+	enemy1_hp = 75;
+	enemy2 = 2;
+	enemy2_hp = 50;
+	enemy3 = 2;
+	enemy3_hp = 50;
+	battle();
+	Sleep(5000);
+	cout << "\nAs you delve deeper into this sort of personal Tartarus, you once again have to fight even more infected. These look like they were once part of a guild...\n";
+	Sleep(3000);
+	enemy1 = 2;
+	enemy1_hp = 75;
+	enemy2 = 2;
+	enemy2_hp = 50;
+	enemy3 = 2;
+	enemy3_hp = 75;
+	battle();
+	Sleep(5000);
+	cout << "\nThe further you go, you feel as if the world you knew has vanished far behind you, leaving you in this abstract mockery of life.\n";
+	Sleep(3000);
+	cout << "\nBefore you is a cave entrance, blocked by an infected ogre. It's almost like the juggernaut from earlier, but a tad bit smaller.\n";
+	cout << "\nOn sight, the beast calls for infected to back it up. There's no way to get past this one.\n";
+	Sleep(3000);
+	enemy1 = 3;
+	enemy1_hp = 125;
+	enemy2 = 2;
+	enemy2_hp = 50;
+	enemy3 = 2;
+	enemy3_hp = 65;
+	battle();
+	Sleep(5000); // I will continue the story from here!!! - Cole
+}
 int main() {
 	tavern_choice = 0;
 	bridge_choice = 0;
