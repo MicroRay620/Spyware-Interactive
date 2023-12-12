@@ -412,7 +412,7 @@ void battle() {
 				}
 			}
 
-			if (spell_choice == 1 && light == true && special_point >= 25) { //Light Spell -Ruby 
+			if (spell_choice == 1 && light == true && special_point >= 10) { //Light Spell -Ruby 
 				special_point -= 10;
 				int blind_chance = random_crit(1, 4);
 				if (blind_chance == 1) {
@@ -434,9 +434,6 @@ void battle() {
 			else if (spell_choice == 2 && special_point >= 25) { //Magic Missile -Ruby
 				special_point -= 25;
 				player_atk = 35;
-			}
-			else if (spell_choice == 3) { //This spell and the next one are too unfinished, they won't be in QA2 - Nate
-				random_crit(1, 4);
 			}
 			else {
 				special_point = turn_special_point;
