@@ -169,6 +169,11 @@ void enemy_turn(int current_enemy) {
 		}
 		player_sanity -= 10; //The old value was 25, a bit extreme for a boss fight that's supposed to take many turns. - Nate
 	}
+	else if (current_enemy == 4) {
+		cout << "\nThe writhing mass shoots a crackling pain into your head...\n";
+		player_hp -= 35;
+		player_sanity -= 20;
+	}
 	else if (current_enemy == 1738) {
 		//These special interactions are a cool idea, but since they're in a place that wouldn't work,
 		//and they only exist for a fight most people won't see, that they'll lose anyway, they're commented out for now.
@@ -192,6 +197,8 @@ void battle() {
 			exit(0);
 		}
 		else if (player_hp <= 0) {
+			cout << "\nYour body falls over, cold and lifeless. A perfect vessel for the parasite to enact its primal will...\n";
+			Sleep(5000);
 			game_over_ascii();
 			cout << "\nThank you for playing the second demo! Feel free to play it again and make different choices.\nPlease be sure to fill out the QA form and let us know of any issues!\n";
 			cin.get(proceed); //I remembered that the exe would exit as soon as it ended, so we needed these. - Nate
@@ -542,7 +549,6 @@ void forest() {
 	std::cout << "Making it into the depths of the expansive forest, you hear groans and grunts of the dearly departed. Spores permeate the thick fog within." << endl;
 	std::cout << "Luckily, you find a hot spring, completely isolated from the rest of the forest." << endl;
 	std::cout << "Hit ENTER to continue.";
-	cin.ignore();
 	cin.get(proceed);
 
 
@@ -581,7 +587,6 @@ void forest() {
 	std::cout << "As you venture forth through the forest, you stumble upon a bridge, its cobblestone exterior mixed with the same pus and broils that you saw on the bags of flesh moments before." << endl;
 	std::cout << "On the other side of the bridge, a horrid beast that was once a bear stands, its arms broken and battered, with the same rancid, hardened sinew formed into disgusting organic blades." << endl;
 	std::cout << "Press ENTER to continue." << endl;
-	cin.ignore();
 	cin.get(proceed);
 	std::cout << "You have a few options on your hands. You can either hide under the bridge, or fight the abomination head-on." << endl;
 	while (bridge_choice != 1 && bridge_choice != 2) {
@@ -604,7 +609,7 @@ void forest() {
 		}
 		else if (player_sanity < 75) {
 			std::cout << "The stress was getting to you. You charge head-on, ready to fight the beast. It must die.\n";
-			std::cout << "\nPrepare for a tought fight! Press ENTER to continue.\n" << endl;
+			std::cout << "\nPrepare for a tough fight! Press ENTER to continue.\n" << endl;
 			cin.ignore();
 			cin.get(proceed);
 			enemy1 = 3;
@@ -621,7 +626,6 @@ void forest() {
 	std::cout << "\nYou might as well try to get in there and find out what's causing this, or die trying.\n";
 	std::cout << "\nPress ENTER to begin your final stretch...\n";
 	cin.get(proceed);
-	cin.ignore();
 }
 
 void finale() {
@@ -634,7 +638,6 @@ void finale() {
 	enemy3 = 2;
 	enemy3_hp = 50;
 	battle();
-	Sleep(5000);
 	cout << "\nAs you delve deeper into this sort of personal Tartarus, you once again have to fight even more infected. These look like they were once part of a guild...\n";
 	Sleep(3000);
 	enemy1 = 2;
@@ -642,9 +645,8 @@ void finale() {
 	enemy2 = 2;
 	enemy2_hp = 50;
 	enemy3 = 2;
-	enemy3_hp = 75;
+	enemy3_hp = 60;
 	battle();
-	Sleep(5000);
 	cout << "\nThe further you go, you feel as if the world you knew has vanished far behind you, leaving you in this abstract mockery of life.\n";
 	Sleep(3000);
 	cout << "\nBefore you is a cave entrance, blocked by an infected ogre. It's almost like the juggernaut from earlier, but a tad bit smaller.\n";
@@ -657,8 +659,58 @@ void finale() {
 	enemy3 = 2;
 	enemy3_hp = 65;
 	battle();
-	Sleep(5000); // I will continue the story from here!!! - Cole
+	cout << "\nThey lie on the ground, completely destroyed. A wail can nearly be heard. Unlike the others, this one sounds the least human overall.\n";
+	cout << "\nThe screeches and cries continue, all of which is coming from the cave. You have nothing better to do than to head on inside.\n";
+	cout << "\nThere's no going back after this. Press ENTER whenever you are ready.\n";
+	cin.ignore();
+	cin.get(proceed);
+	Sleep(3000);
+	cout << "\nThe cave is riddled with mashed-up bodies, some full of townsfolk that look pretty familiar.\n";
+	Sleep(3000);
+	cout << "\nThe groaning persists, and you turn to see a writhing mass of rotten flesh tapered to the cave wall.\n";
+	cout << "\nIt's massive, even bigger than the mutated bear from earlier. The only part that looks human is-\n";
+	cout << "\nIt's... It's your partner. The giant pulsating glob of dead flesh was your comrade, now nothing more than a fancy house decoration for the dead.\n";
+	Sleep(3000);
+	cout << "\nYou grip your weapon. Your adrenaline is pumping. You know what must be done.\n";
+	Sleep(5000);
+	enemy1 = 4;
+	enemy1_hp = 250;
+	player_hp = 150;
+	special_point = 150;
+	battle();
+	cout << "\nThe beast unleashes a roar of agony, and the pus-filled boils on the walls begin to pulsate and slosh around. Your friend can finally rest.\n";
+	Sleep(2000);
+	cout << "\nYou run out of the cave, watching multiple of the thralls simply drop dead. The broils begin to pop and dissipate. The sun pierces through the hazy fog.\n";
+	Sleep(2000);
+	if (player_sanity >= 30) {
+		cout << "\nThe beasts are gone. You begin the long trek back home. Civilization may be gone, but you can rebuild.\n";
+		cout << "\nYou don't know what comes next. All you know is that they're gone, and if they come back...\n";
+		Sleep(3000);
+		cout << "\nYou'll be ready.\n";
+		Sleep(5000);
+		cout << "\n===THE END===\n";
+	}
+	else {
+		cout << "\nThe beasts may be gone, but they always come back. Why wouldn't they? You know that they'll come for you next, if not for your bloodline.\n";
+		Sleep(3000);
+		cout << "\nYou live alone in the cave, fearful of the parasite's return. It drives you mad how easy those little leeches were able to tear through sinnew, crunch down bone...\n";
+		Sleep(3000);
+		cout << "\nYou never leave the cave. The bodies don't taste so well, but going out there? Too dangerous. Better safe than sorry.\n";
+		Sleep(3000);
+		cout << "\nSo, as you eat the muddled inky flesh of one of the townsfolk, you sigh in the fact that you are safe and perfectly fine.\n";
+		Sleep(5000);
+		cout << "\n===THE END===\n";
+	}
 }
+
+void credits() {
+	cout << "\nSPYWARE INTERACTIVE IS...\n";
+	//add names here! - Cole
+
+	//Once that's said and done, add a cin that asks the player if they want to say anything. If they say anything other than "metal pipe", make it say thank you and end the function. - Cole
+	//If they do type "metal pipe", give the player 999 billion hp and the fight against the metal pipe as a sort of secret ending. - Cole
+}
+
 int main() {
 	tavern_choice = 0;
 	bridge_choice = 0;
@@ -715,18 +767,21 @@ int main() {
 	if (tavern_choice == 1) {
 		door_kicked();
 		forest();
+		finale();
 		exit(0);
 	}
 
 	else if (tavern_choice == 2) {
 		backdoor();
 		forest();
+		finale();
 		exit(0);
 	}
 
 	else if (tavern_choice == 3) {
 		coward();
 		forest();
+		finale();
 		exit(0);
 	}
 }
