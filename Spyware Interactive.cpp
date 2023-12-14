@@ -430,7 +430,19 @@ void battle() {
 			if (spell_choice == 1 && light == true && special_point >= 10) { //Light Spell -Ruby 
 				special_point -= 10;
 				int blind_chance = random_crit(1, 4);
-				if (blind_chance == 1) {
+				if (blind_chance == 1 && weapon3 == false) {
+					if (attack_choice == 1) {
+						enemy1_blind = true;
+					}
+					if (attack_choice == 2) {
+						enemy2_blind = true;
+					}
+					if (attack_choice == 3) {
+						enemy3_blind = true;
+					}
+					cout << "The enemy is blinded\n";
+				}
+				else if (weapon3 == true && blind_chance <= 2) {
 					if (attack_choice == 1) {
 						enemy1_blind = true;
 					}
@@ -448,7 +460,14 @@ void battle() {
 			}
 			else if (spell_choice == 2 && special_point >= 25) { //Magic Missile -Ruby
 				special_point -= 25;
-				player_atk = 35;
+				if (weapon3 == false) {
+					player_atk = 35;
+				}
+				else if (weapon3 == true) {
+					special_point -= 15;
+					player_atk = 55;
+				}
+
 				if (attack_choice == 1) {
 					enemy1_hp -= player_atk;
 				}
@@ -458,6 +477,14 @@ void battle() {
 				else if (attack_choice == 3) {
 					enemy3_hp -= player_atk;
 				}
+			}
+			else if (spell_choice == 3 && fireball == true) {
+				special_point -= 50;
+				player_atk = 40;
+				enemy1_hp -= player_atk;
+				enemy2_hp -= player_atk;
+				enemy3_hp -= player_atk;
+				cout << "You fire a large cone of flames. All enemies take 40 damage" << endl;
 			}
 			else {
 				special_point = turn_special_point;
