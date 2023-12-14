@@ -213,6 +213,9 @@ void battle() {
 		}
 		if (enemy1 == 0 && enemy2 == 0 && enemy3 == 0) {
 			player_hp = 100;
+			if (class_choice == 2) {
+				player_hp = 150;
+			}
 			enemy1_blind = false;
 			enemy2_blind = false;
 			enemy3_blind = false;
@@ -466,9 +469,9 @@ void battle() {
 
 void door_kicked() {
 	cout << "\nWorking up the impaired judgment caused by your three-day bender, you effortlessly kick down the door and face the demonic door-puncher.\n" << endl;
-	cout << "It was a horrific sight indeed. The man- no, the beast before you was a man, but its clammy flesh has been contorted in a manner where its head is dangling to the side,";
-	cout << "\na face of anguish and suffering frozen in the exact moment of its initial form being violated.";
-	cout << "\nBurrowed in its chest, a giant squirming parasite, with its red tendrils sticking out and aimlessly feeling everything it can.";
+	cout << "\nIt was a horrific sight indeed. The man- no, the beast before you was a man, but its clammy flesh has been contorted in a manner where its head is dangling to the side,\n";
+	cout << "\na face of anguish and suffering frozen in the exact moment of its initial form being violated.\n";
+	cout << "\nBurrowed in its chest, a giant squirming parasite, with its red tendrils sticking out and aimlessly feeling everything it can.\n";
 	cout << "\nPress ENTER to continue.\n" << endl;
 	cin.ignore();
 	cin.get(proceed);
@@ -609,8 +612,10 @@ void forest() {
 		}
 		else if (bridge_choice == 2 && player_sanity >= 75) {
 			cout << "You can't take that on, so you decide to slide under the bridge and hope to God that the thing will move.\n";
+			Sleep(3000);
 			cout << "Giant stomps cause your adrenaline to peak. Above your head, the putrid monster's thunderous footsteps crackle with every hit against the loose stone.\n";
-			cout << "Going, going... gone. It leaves, and you're able to get up to the top.\n";
+			Sleep(3000);
+			cout << "\nGoing, going... gone. It leaves, and you're able to get up to the top.\n";
 		}
 		else if (player_sanity < 75) {
 			std::cout << "The stress was getting to you. You charge head-on, ready to fight the beast. It must die.\n";
@@ -623,6 +628,17 @@ void forest() {
 		}
 	}
 	std::cout << "\nOn top of the bridge, you sit down and just take in the absolute miserable state you're in.\n";
+	if (weapon3 == false) {
+		std::cout << "\nResting on a crate, you spot a discarded ";
+		if (class_choice == 1) {
+			std::cout << "halberd";
+		}
+		else {
+			std::cout << "quarterstaff";
+		}
+		std::cout << ", it's seen better days, but even in this state, it's a powerful weapon.\n";
+		weapon3 = true;
+	}
 	std::cout << "\nYou're lost, battered, and completely unsure of how you could even end this madness enveloping around you.\n";
 	std::cout << "\nHowever, you feel that the only key to getting through this is to barge into ground zero on your left, which is more forestation consumed by the parasite.\n";
 	Sleep(3000);
@@ -630,6 +646,7 @@ void forest() {
 	Sleep(3000);
 	std::cout << "\nYou might as well head in there and find out what's causing this, or die trying.\n";
 	std::cout << "\nPress ENTER to begin your final stretch...\n";
+	cin.ignore();
 	cin.get(proceed);
 }
 
@@ -670,7 +687,6 @@ void finale() {
 	cout << "\nThere's no going back after this. Press ENTER whenever you are ready.\n";
 	cin.ignore();
 	cin.get(proceed);
-	Sleep(3000);
 	cout << "\nThe cave is riddled with mashed-up bodies, some full of townsfolk that look pretty familiar.\n";
 	Sleep(3000);
 	cout << "\nThe groaning persists, and you turn to see a writhing mass of rotten flesh tapered to the cave wall.\n";
@@ -716,23 +732,24 @@ void credits() {
 
 	//Once that's said and done, add a cin that asks the player if they want to say anything. If they say anything other than "metal pipe", make it say thank you and end the function. - Cole
 	//If they do type "metal pipe", give the player 999 billion hp and the fight against the metal pipe as a sort of secret ending. - Cole
-	cout << "\nIf you have anything to say about the game, please type it in now.\n"
-	cin << final_string;
+	cout << "\nIf you have anything to say about the game, please type it in now.\n";
+	getline(cin, final_string);
 	if (final_string == "metal pipe") {
 		cout << "Suddenly, a metal pipe starts to move from the ground! You must be insane, but it's really happening!";
 		cout << "\n                                                                       ============\n                                                                ======================\n                                                           ===========================\n                                                          ============================\n                                                    ==================================\n                                                    ===============================\n                                              ====================================\n                                         ===================================\n                                       =====================================\n                                  ====================================\n                                 ====================================\n                           =====================================\n                           ===============================\n                     ====================================\n               ====================================\n              =====================================\n            =================================\n           =====      =================\n           =====      =================\n           =====      ===========\n            ====================\n              =============\n                =========";
 		cout << "\nThis looks like a one-way trip... Pray to your god, and press ENTER to accept your fate.\n" << endl;
 		cin.get(proceed);
-		player_hp = 9999999999
-		special_point_max = 50000
-		special_point = 50000
+		player_hp = 99999999999999;
+		special_point_max = 50000;
+		special_point = 50000;
 		enemy1 = 1738;
 		enemy1_hp = 1738;
 		battle();
+		cout << "\nThanks for playing. Be sure to smash that like button, subscribe and ring that bell for future uploads.\n";
 	}
 	else {
-		cout << "Thank you for playing!";	
-	}	
+		cout << "Thank you for playing!";
+	}
 }
 
 int main() {
@@ -752,7 +769,6 @@ int main() {
 	magic_missile = false;
 	freeze = false;
 	fireball = false;
-
 	std::cout << "This game is best experienced in fullscreen or a maximized window.\nHit F11 or click on the button next to the X in the top left corner.";
 	Sleep(10000);
 	team_logo_ascii();
@@ -767,6 +783,7 @@ int main() {
 		if (class_choice == 2) {
 			light = true; //The Light Spell -Ruby //Commented out because it's unfinished - Nate
 			magic_missile = true; //Magic Missile Spell -Ruby
+			player_hp = 150;
 		}
 	}
 	weapon2 = true;
@@ -792,6 +809,7 @@ int main() {
 		door_kicked();
 		forest();
 		finale();
+		credits();
 		exit(0);
 	}
 
@@ -799,6 +817,7 @@ int main() {
 		backdoor();
 		forest();
 		finale();
+		credits();
 		exit(0);
 	}
 
@@ -806,6 +825,7 @@ int main() {
 		coward();
 		forest();
 		finale();
+		credits();
 		exit(0);
 	}
 }
