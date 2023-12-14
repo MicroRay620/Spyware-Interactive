@@ -449,6 +449,15 @@ void battle() {
 			else if (spell_choice == 2 && special_point >= 25) { //Magic Missile -Ruby
 				special_point -= 25;
 				player_atk = 35;
+				if (attack_choice == 1) {
+					enemy1_hp -= player_atk;
+				}
+				else if (attack_choice == 2) {
+					enemy2_hp -= player_atk;
+				}
+				else if (attack_choice == 3) {
+					enemy3_hp -= player_atk;
+				}
 			}
 			else {
 				special_point = turn_special_point;
