@@ -775,10 +775,13 @@ void finale() {
 
 void credits() {
 	cout << "\nSPYWARE INTERACTIVE IS...\n";
-	//add names here! - Cole
-
-	//Once that's said and done, add a cin that asks the player if they want to say anything. If they say anything other than "metal pipe", make it say thank you and end the function. - Cole
-	//If they do type "metal pipe", give the player 999 billion hp and the fight against the metal pipe as a sort of secret ending. - Cole
+	Sleep(3000);
+	cout << "\nCole Neely\n";
+	Sleep(2000);
+	cout << "\nNathan Beauchamp";
+	Sleep(2000);
+	cout << "\nRuby Winter";
+	Sleep(5000);
 	cout << "\nIf you have anything to say about the game, please type it in now.\n";
 	getline(cin, final_string);
 	if (final_string == "metal pipe") {
@@ -792,6 +795,8 @@ void credits() {
 		enemy1 = 1738;
 		enemy1_hp = 1738;
 		battle();
+		cout << "\nThe pipe gets vaporized immediately. The President sends his thanks, you get a key to the White House, and you are loved by many for your pure act of selfless courage.\n";
+		Sleep(3000);
 		cout << "\nThanks for playing. Be sure to smash that like button, subscribe and ring that bell for future uploads.\n";
 	}
 	else {
