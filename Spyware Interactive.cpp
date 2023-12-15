@@ -874,15 +874,20 @@ int main() {
 	magic_missile = false;
 	freeze = false;
 	fireball = false;
-	std::cout << "This game is best experienced in fullscreen or a maximized window.\nHit F11 or click on the button next to the X in the top left corner.";
-	Sleep(10000);
-	std::cout << "Every choice will have options that appear like this:\n1. First Option\n2. Second Option\nEnter the number next to the choice, if you type anything else, i.e. 'one' insted of '1', it will not work. You have been warned.";
+	std::cout << "This game is best experienced in fullscreen or a maximized window.\nHit F11 or click on the button next to the X in the top left corner." << endl;
+	Sleep(5000);
+	std::cout << "Every choice will have options that appear like this:\n1. First Option\n2. Second Option" << endl;
+	Sleep(5000);
+	cout << "Enter the number next to the choice, if you type anything else, i.e. 'one' insted of '1', it will not work. You have been warned." << endl;
+	Sleep(5000);
 	team_logo_ascii();
-	std::cout << "\nA game by Spyware Interactive\n";
+	std::cout << "\nA game by Spyware Interactive\n" << endl;
+	Sleep(5000);
+	title_ascii();
 	Sleep(5000);
 
 	while (class_choice != 1 && class_choice != 2) {
-		cout << "\nYou're slightly coming to. You can't remember your name, but you at least remember your occupation. You are a...\n1. Knight\n2. Mage \nType the number of your choice and press ENTER to continue.\n";
+		cout << "\n\nYou're slightly coming to. You can't remember your name, but you at least remember your occupation. You are a...\n1. Knight\n2. Mage \nType the number of your choice and press ENTER to continue.\n";
 
 		cin >> class_choice;
 
