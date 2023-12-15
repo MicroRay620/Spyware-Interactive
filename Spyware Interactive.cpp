@@ -755,6 +755,7 @@ void finale() {
 	Sleep(2000);
 	cout << "\nYou run out of the cave, watching multiple of the thralls simply drop dead. The broils begin to pop and dissipate. The sun pierces through the hazy fog.\n";
 	Sleep(2000);
+	turns_passed = turns_passed - enemy1_blind_turn;
 	if (turns_passed <= 5) {
 		cout << "\nThe beasts are gone. You begin the long trek back home. Civilization may be gone, but you can rebuild.\n";
 		cout << "\nYou don't know what comes next. All you know is that they're gone, and if they come back...\n";
