@@ -763,7 +763,7 @@ void finale() {
 		Sleep(5000);
 		cout << "\n===THE END===\n";
 	}
-	else if (class_chioce == 2 && turns_passed <= 8) {
+	else if (class_choice == 2 && turns_passed <= 8) {
 		cout << "\nThe beasts are gone. You begin the long trek back home. Civilization may be gone, but you can rebuild.\n";
 		cout << "\nYou don't know what comes next. All you know is that they're gone, and if they come back...\n";
 		Sleep(3000);
