@@ -354,7 +354,7 @@ void battle() {
 				cout << "\n3. Freeze";
 			}
 			if (fireball == true) {
-				cout << "\n4. Fireball 50 SP (This will target all enemies";
+				cout << "\n4. Fireball 50 SP (This will target all enemies)";
 			}
 			std::cout << "\n";
 
