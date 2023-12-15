@@ -10,6 +10,7 @@ using namespace std;
 int class_choice = 0; // 1 is knight, 2 is mage 
 int player_atk = 20;
 int special_point_max = 100;
+int turns_passed = 0;
 int special_point;
 int turn_special_point = 100; //This is so special points don't get used up when the player chooses to double down or use a spell then fails the next input - Nate
 int player_sanity = 100;
@@ -192,6 +193,7 @@ void enemy_turn(int current_enemy) {
 }
 
 void battle() {
+	turns_passed = 0;
 	while (true) {
 		turn_special_point = special_point; //Restores SP if something goes wrong between using double down or a spell
 		if (player_hp <= 0 && enemy1 == 1738) {
@@ -500,6 +502,7 @@ void battle() {
 		enemy_turn(enemy1);
 		enemy_turn(enemy2);
 		enemy_turn(enemy3);
+		turns_passed += 1;
 	}
 }
 
@@ -752,7 +755,15 @@ void finale() {
 	Sleep(2000);
 	cout << "\nYou run out of the cave, watching multiple of the thralls simply drop dead. The broils begin to pop and dissipate. The sun pierces through the hazy fog.\n";
 	Sleep(2000);
-	if (player_sanity >= 30) {
+	if (turns_passed <= 5) {
+		cout << "\nThe beasts are gone. You begin the long trek back home. Civilization may be gone, but you can rebuild.\n";
+		cout << "\nYou don't know what comes next. All you know is that they're gone, and if they come back...\n";
+		Sleep(3000);
+		cout << "\nYou'll be ready.\n";
+		Sleep(5000);
+		cout << "\n===THE END===\n";
+	}
+	else if (class_chioce == 2 && turns_passed <= 8) {
 		cout << "\nThe beasts are gone. You begin the long trek back home. Civilization may be gone, but you can rebuild.\n";
 		cout << "\nYou don't know what comes next. All you know is that they're gone, and if they come back...\n";
 		Sleep(3000);
