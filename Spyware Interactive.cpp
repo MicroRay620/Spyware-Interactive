@@ -506,7 +506,7 @@ void battle() {
 					cout << "\nEnemy 1 has been defeated!\n";
 				}
 			}
-			else if (spell_choice == 3 && fireball == true) {
+			else if (spell_choice == 3 && fireball == true && special_point >= 50) {
 				special_point -= 50;
 				player_atk = 40;
 				if (attack_choice == 1) {
@@ -519,13 +519,11 @@ void battle() {
 					enemy2_hp -= player_atk;
 					enemy3_hp -= player_atk;
 				}
-
 				else if (attack_choice == 3) {
 					enemy1_hp -= player_atk;
 					enemy2_hp -= player_atk;
 					enemy3_hp -= player_atk;
 				}
-
 				cout << "You fire a large cone of flames. All enemies take 40 damage" << endl;
 			}
 			else {
