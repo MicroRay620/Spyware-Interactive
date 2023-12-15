@@ -340,16 +340,21 @@ void battle() {
 		else if (attack == 2) { //Spells -Ruby
 			cout << "\nWhich spell would you like to use?";
 			if (light == true) {
-				cout << "\n1. Light 25 SP";
+				cout << "\n1. Light 10 SP";
 			}
 			if (magic_missile == true) {
-				cout << "\n2. Magic Missile 25 SP";
+				if (weapon3 != true) {
+					cout << "\n2. Magic Missile 25 SP";
+				}
+				else {
+					cout << "\n2. Magic Missile 15 SP";
+				}
 			}
 			if (freeze == true) {
 				cout << "\n3. Freeze";
 			}
 			if (fireball == true) {
-				cout << "\n4. Fireball";
+				cout << "\n4. Fireball 50 SP (This will target all enemies";
 			}
 			std::cout << "\n";
 
@@ -408,7 +413,6 @@ void battle() {
 
 		else if (attack == 2) {
 			if (enemy1 == 1738) {
-				cout << "Test\n";
 				if (spell_choice == 1 && light == true && special_point >= 25) { //Light Spell -Ruby
 					cout << "The pipe reflected your light and blinded you instead!\n";
 					enemy1_blind = false;
@@ -472,20 +476,52 @@ void battle() {
 
 				if (attack_choice == 1) {
 					enemy1_hp -= player_atk;
+					cout << "\nEnemy 1 takes " << player_atk << " damage!";
 				}
 				else if (attack_choice == 2) {
 					enemy2_hp -= player_atk;
+					cout << "\nEnemy 2 takes " << player_atk << " damage!";
 				}
 				else if (attack_choice == 3) {
 					enemy3_hp -= player_atk;
+					cout << "\nEnemy 3 takes " << player_atk << " damage!";
+				}
+
+				if (enemy1_hp <= 0 && enemy1 != 0) {
+					enemy1 = 0;
+					cout << "\nEnemy 1 has been defeated!\n";
+				}
+
+				if (enemy2_hp <= 0 && enemy2 != 0) {
+					enemy2 = 0;
+					cout << "\nEnemy 1 has been defeated!\n";
+				}
+
+				if (enemy3_hp <= 0 && enemy3 != 0) {
+					enemy3 = 0;
+					cout << "\nEnemy 1 has been defeated!\n";
 				}
 			}
 			else if (spell_choice == 3 && fireball == true) {
 				special_point -= 50;
 				player_atk = 40;
-				enemy1_hp -= player_atk;
-				enemy2_hp -= player_atk;
-				enemy3_hp -= player_atk;
+				if (attack_choice == 1) {
+					enemy1_hp -= player_atk;
+					enemy2_hp -= player_atk;
+					enemy3_hp -= player_atk;
+				}
+				else if (attack_choice == 2) {
+					enemy1_hp -= player_atk;
+					enemy2_hp -= player_atk;
+					enemy3_hp -= player_atk;
+				}
+
+				else if (attack_choice == 3) {
+					enemy1_hp -= player_atk;
+					enemy2_hp -= player_atk;
+					enemy3_hp -= player_atk;
+				}
+
 				cout << "You fire a large cone of flames. All enemies take 40 damage" << endl;
 			}
 			else {
