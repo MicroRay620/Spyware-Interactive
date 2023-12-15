@@ -749,7 +749,10 @@ void finale() {
 	enemy1 = 4;
 	enemy1_hp = 250;
 	player_hp = 150;
-	special_point = 150;
+	if (class_choice == 2) {
+		player_hp = 200;
+	}
+	special_point = special_point_max + 50;
 	battle();
 	cout << "\nThe beast unleashes a roar of agony, and the pus-filled boils on the walls begin to pulsate and slosh around. Your friend can finally rest.\n";
 	Sleep(2000);
