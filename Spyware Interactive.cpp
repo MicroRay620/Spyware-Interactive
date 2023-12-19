@@ -506,7 +506,7 @@ void battle() {
 					cout << "\nEnemy 1 has been defeated!\n";
 				}
 			}
-			else if (spell_choice == 3 && fireball == true && special_point >= 50) {
+			else if (spell_choice == 3 && fireball == true && special_point >= 50) { //FIX THIS STUFF HERE
 				special_point -= 50;
 				player_atk = 40;
 				if (attack_choice == 1) {
@@ -524,7 +524,19 @@ void battle() {
 					enemy2_hp -= player_atk;
 					enemy3_hp -= player_atk;
 				}
-				cout << "You fire a large cone of flames. All enemies take 40 damage" << endl;
+				cout << "\nYou fire a large cone of flames. All enemies take 40 damage.";
+				if (enemy1_hp <= 0 && enemy1 != 0) {
+					cout << "\nEnemy 1 has been defeated.";
+					enemy1 = 0;
+				}
+				if (enemy2_hp <= 0 && enemy2 != 0) {
+					cout << "\nEnemy 2 has been defeated.";
+					enemy2 = 0;
+				}
+				if (enemy3_hp <= 0 && enemy3 != 0) {
+					cout << "\nEnemy 3 has been defeated.";
+					enemy3 = 0;
+				}
 			}
 			else {
 				special_point = turn_special_point;
@@ -546,6 +558,7 @@ void battle() {
 
 void door_kicked() {
 	cout << "\nWorking up the impaired judgment caused by your three-day bender, you effortlessly kick down the door and face the demonic door-puncher.\n" << endl;
+	Sleep(3000);
 	cout << "\nIt was a horrific sight indeed. The man- no, the beast before you was a man, but its clammy flesh has been contorted in a manner where its head is dangling to the side,\n";
 	cout << "\na face of anguish and suffering frozen in the exact moment of its initial form being violated.\n";
 	cout << "\nBurrowed in its chest, a giant squirming parasite, with its red tendrils sticking out and aimlessly feeling everything it can.\n";
@@ -569,6 +582,7 @@ void door_kicked() {
 void backdoor() {
 	cout << "Deciding that perhaps confronting a horror beyond your comprehension head-on isn't smart, you carefully sneak into the back of the bar," << endl;
 	cout << "hoping that you can easily get out of this mess. You're stopped dead in your tracks by two fleshy, pulsating parasites about the size of your head.\n";
+	Sleep(3000);
 	cout << "Press ENTER to continue.";
 	cin.ignore();
 	cin.get(proceed);
@@ -581,17 +595,19 @@ void backdoor() {
 	enemy2_hp = 25;
 	battle();
 	cout << "That was easy, you thought. You leave silently through the back, and slip away into the forest, unsure of what has become of everyone else.";
-
+	Sleep(3000);
 }
 
 void coward() {
 	cout << "Unsure of the idea that you wish to leave your only shelter, you hide behind the bar counter, praying that the incessant knocking stops." << endl;
+	Sleep(3000);
 	cout << "The knocking ends. For a brief moment, you stop to consider if it was only a drunkard, and the idea almost puts you at ease.\n";
 	cout << "Maybe you're still a little woozy and just imagining stuff...\n";
 	cout << "\nPress ENTER to continue.\n" << endl;
 	cin.ignore();
 	cin.get(proceed);
 	cout << "Your hopes for salvation are dashed as the door explodes into countless jagged bits of wood, and the assailant enters, its feet stomping against the tile." << endl;
+	Sleep(3000);
 	cout << "You hold your breath behind the counter as the thing slinks about the place. The stench of rot permeates the air as it gets ever so closer to the counter...\n";
 	cout << "\nPress ENTER to continue.\n" << endl;
 	cin.get(proceed);
@@ -604,7 +620,9 @@ void coward() {
 	enemy1_hp = 75;
 	battle();
 	cout << "You need to get out of here after that. So, you walk out only to find the entire town swarming with these pus-ridden acolytes of death." << endl;
+	Sleep(3000);
 	cout << "Fearing for your life, you find a sewer grate and head down. It stinks, but at least you're safe for now." << endl;
+	Sleep(3000);
 	cout << "\nPress ENTER to continue.\n" << endl;
 	cin.get(proceed);
 	if (player_sanity <= 50) {
@@ -723,19 +741,21 @@ void forest() {
 		std::cout << ", it's seen better days, but even in this state, it's a powerful weapon.\n";
 		weapon3 = true;
 		if (class_choice == 2) {
-			cout << "\n Beside it you see a piece of paper with the fireball spell";
+			Sleep(3000);
+			cout << "\nBeside it, you see a piece of paper with the fireball spell.\n";
 			fireball = true;
 		}
 	}
+	Sleep(3000);
 	std::cout << "\nYou're lost, battered, and completely unsure of how you could even end this madness enveloping around you.\n";
+	Sleep(3000);
 	std::cout << "\nHowever, you feel that the only key to getting through this is to barge into ground zero on your left, which is more forestation consumed by the parasite.\n";
 	Sleep(3000);
 	std::cout << "\nYou haven't seen anyone. In fact, you could be the last person on this planet for all you know. The screaming has stopped for a considerable amount of time.\n";
 	Sleep(3000);
 	std::cout << "\nYou might as well head in there and find out what's causing this, or die trying.\n";
-	std::cout << "\nPress ENTER to begin your final stretch...\n";
-	cin.ignore();
-	cin.get(proceed);
+	std::cout << "\nPrepare yourself for the final stretch...\n";
+	Sleep(5000);
 }
 
 void finale() {
@@ -771,15 +791,18 @@ void finale() {
 	enemy3_hp = 65;
 	battle();
 	cout << "\nThey lie on the ground, completely destroyed. A wail can nearly be heard. Unlike the others, this one sounds the least human overall.\n";
+	Sleep(3000);
 	cout << "\nThe screeches and cries continue, all of which is coming from the cave. You have nothing better to do than to head on inside.\n";
-	cout << "\nThere's no going back after this. Press ENTER whenever you are ready.\n";
-	cin.ignore();
-	cin.get(proceed);
+	Sleep(3000);
+	cout << "\nThere's no going back after this. Get ready...\n";
+	Sleep(5000);
 	cout << "\nThe cave is riddled with mashed-up bodies, some full of townsfolk that look pretty familiar.\n";
 	Sleep(3000);
 	cout << "\nThe groaning persists, and you turn to see a writhing mass of rotten flesh tapered to the cave wall.\n";
-	cout << "\nIt's massive, even bigger than the mutated bear from earlier. The only part that looks human is-\n";
+	cout << "\nIt's massive, even bigger than the mutated bear from earlier. The only part that looks human is-\n"; 
+	Sleep(3000);
 	gravemind_ascii();
+	Sleep(3000);
 	cout << "\nIt's... It's your partner. The giant pulsating glob of dead flesh was your comrade, now nothing more than a fancy house decoration for the dead.\n";
 	Sleep(3000);
 	cout << "\nYou grip your weapon. Your adrenaline is pumping. You know what must be done.\n";
@@ -831,9 +854,9 @@ void credits() {
 	Sleep(3000);
 	cout << "\nCole Neely\n";
 	Sleep(2000);
-	cout << "\nNathan Beauchamp";
+	cout << "\nNathan Beauchamp\n";
 	Sleep(2000);
-	cout << "\nRuby Winter";
+	cout << "\nRuby Winter\n";
 	Sleep(5000);
 	cout << "\nIf you have anything to say about the game, please type it in now.\n";
 	getline(cin, final_string);
@@ -900,16 +923,20 @@ int main() {
 	weapon2 = true;
 	cout << "\nYou awaken in a hazy stupor, the past few nights seeming to be nothing more than a barrage of unpaid bar tabs and enough liver damage to make a dwarf go cold turkey.";
 	cout << "\nThe lights are dim, and nobody else is in sight. Perhaps the barkeep closed up for the day and didn't bother to drag you out. Can't say you blame them, though.";
+	Sleep(3000);
 	cout << "\nEver since your partner went missing after last week's expedition, you've turned to drinking and vice to keep your mind off of it.";
 	cout << "\nHowever, this massive hangover dawning upon you signals that you can't just keep putting it off forever.\n";
+	Sleep(3000);
 	cout << "\nPress ENTER to continue.\n";
 	cin.get(proceed);
 	cin.ignore(); //having it here did work for me -Ruby
 	cout << "On cue, the front door is assaulted by three knocks that echo throughout the whole room. You almost go for it, but the knocking continues.";
 	cout << "\nDemonic screeches and garbled cries for help muffled by frantic growls and horrid scraping.";
+	Sleep(3000);
 	cout << "\nPress ENTER to continue.\n";
 	cin.get(proceed);
 	cout << "Backing away, you figure that you need to get out of here before whatever this thing is comes in. You ponder your next choice of action." << endl;
+	Sleep(3000);
 
 	while (tavern_choice != 1 && tavern_choice != 2 && tavern_choice != 3) {
 		cout << "\n1. Kick the front door down\n2. Go out through the back\n3. Hide behind the counter\n \nType the number of your choice and hit ENTER to continue." << endl;
